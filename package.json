@@ -1,0 +1,1 @@
+{"name":"trains-dz","version":"1.0.0","private":true,"type":"module","scripts":{"test":"node scripts/validate-sntf-data.mjs && node scripts/test-sntf-planner.mjs && node scripts/test-portability.mjs","dev":"python3 -m http.server 8080"}}
