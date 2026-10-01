@@ -3,7 +3,7 @@ const json=n=>JSON.parse(readFileSync('assets/data/sntf/'+n+'.json'));
 const stations=json('stations').stations;assert.equal(new Set(stations.map(s=>s.id)).size,stations.length);
 for(const image of json('gallery-index').images)assert(existsSync(image.path),'Missing gallery image '+image.path);
 for(const route of json('routes').routes)if(route.schedule_image)assert(existsSync(resolve('sectors',route.schedule_image)),'Missing route image '+route.id);
-for(const page of ['index.html','about.html','404.html','sectors/sntf-trains.html','sectors/sntf-trip.html','sectors/sntf.html']){
+for(const page of ['index.html','about.html','contact.html','404.html','sectors/sntf-trains.html','sectors/sntf-trip.html','sectors/sntf.html']){
  const html=readFileSync(page,'utf8');const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);assert.equal(new Set(ids).size,ids.length,'Duplicate IDs '+page);
  for(const m of html.matchAll(/(?:src|href)="([^"#]+)"/g)){const url=m[1].split(/[?#]/)[0];if(!url||/^(https?:|data:|\/|mailto:)/.test(url))continue;assert(existsSync(resolve(dirname(page),url)),'Broken local URL '+page+' -> '+url)}
 }

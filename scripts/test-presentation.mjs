@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';import {readFileSync,existsSync} from 'node:fs';import vm from 'node:vm';
-const pages=['index.html','about.html','sectors/sntf.html','sectors/sntf-trains.html','sectors/sntf-trip.html'];
+const pages=['index.html','about.html','contact.html','sectors/sntf.html','sectors/sntf-trains.html','sectors/sntf-trip.html'];
 for(const page of pages){const html=readFileSync(page,'utf8');assert.equal([...html.matchAll(/<ins class="adsbygoogle"/g)].length,1,page+' one manual ad');assert.equal([...html.matchAll(/pagead2.googlesyndication.com\/pagead\/js\/adsbygoogle.js/g)].length,1,page+' one script');assert(!/<header[\s\S]*?<ins[\s\S]*?<\/header>/.test(html));assert(html.includes('apple-touch-icon'));assert(html.includes('favicon.ico'));assert(html.includes('id="share-dialog"'));for(const [,body] of html.matchAll(/<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)){if(!body.trim())continue;const data=JSON.parse(body);assert.equal(data['@context'],'https://schema.org');assert(data['@graph'].some(n=>n['@type']==='WebSite'));}}
 assert(!readFileSync('404.html','utf8').includes('<ins class="adsbygoogle"'));
 for(const file of ['favicon.ico','assets/images/favicon-16.png','assets/images/favicon-32.png','assets/images/apple-touch-icon.png'])assert(existsSync(file));
