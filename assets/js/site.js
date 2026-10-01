@@ -11,11 +11,3 @@ install?.addEventListener('click',async()=>{if(!installPrompt)return;await insta
 window.addEventListener('appinstalled',()=>{install.hidden=true});
 const root=new URL('../../',document.currentScript.src);
 if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register(new URL('service-worker.js',root)).catch(()=>{}));
-const station=document.querySelector('#station');
-if(station){
- const button=document.createElement('button');button.type='button';button.className='favorite-button';station.closest('.station-hero').prepend(button);
- const read=()=>{try{return JSON.parse(localStorage.getItem('trains-dz-favorites')||'[]')}catch{return []}};
- const update=()=>{const saved=read().some(s=>s.id===station.value);button.textContent=saved?'★ المحطة محفوظة':'☆ احفظ هذه المحطة';button.setAttribute('aria-pressed',String(saved));button.disabled=!station.value};
- button.addEventListener('click',()=>{const entries=read(),id=station.value;if(!id)return;const next=entries.some(s=>s.id===id)?entries.filter(s=>s.id!==id):[...entries,{id,name:station.selectedOptions[0].textContent}];try{localStorage.setItem('trains-dz-favorites',JSON.stringify(next));update()}catch{button.textContent='تعذر الحفظ على هذا الجهاز'}});
- station.addEventListener('change',update);document.addEventListener('rail-ready',()=>setTimeout(update,0));new MutationObserver(update).observe(document.querySelector('#selected-name'),{childList:true,subtree:true});update();
-}

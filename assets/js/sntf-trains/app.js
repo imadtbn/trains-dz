@@ -1,3 +1,4 @@
+import {saveButton} from '../favorites-store.js?v=20261001-favorites';
 import {dayParts,dayISO,recordsAtStation,eligible,formatTime,countdown,classify,mins} from "./engine.js";
 import {planJourney} from "./planner.js";
 import {railwayCategories,categoryRoutes,canonicalRouteId,routeTrips,routeStopSummary,lineRoutes,lineSummary,stationLineServices,eligibleStationIdsByCategory} from "./network.js?v=20260928-catalog-audit";
@@ -340,7 +341,7 @@ function routeCard(route){
   '<p class="pending-stops">المعروف حاليًا: '+esc(name(route.from))+' ← '+esc(name(route.to))+'. لا توجد محطات وسيطة موثقة في قاعدة الرحلات لهذا المسار بعد.</p>';
  const options=ts.map(t=>'<option value="'+esc(t.trip_id)+'">'+esc(t.train_number||"غير محدد")+' · '+esc(serviceName(t.service_id))+' · '+esc(formatTime(t.stop_times[0].departure))+' → '+esc(formatTime(t.stop_times.at(-1).arrival))+'</option>').join("");
  const trainSelect=ts.length?'<label class="trip-select-label" for="trip-'+esc(route.id)+'">محطات قطار محدد</label><select id="trip-'+esc(route.id)+'" data-trip-select="'+esc(route.id)+'"><option value="">اختر القطار لعرض توقفاته ومواقيته</option>'+options+'</select><div class="trip-timeline" data-trip-timeline="'+esc(route.id)+'"></div>':"";
- return '<article class="route-item" data-route-id="'+esc(route.id)+'"><div class="route-top"><span class="tag">'+esc(categoryLabel[route.category]||route.category)+'</span>'+routesStatus+'</div><h4>'+esc(route.name)+'</h4><p class="route-terminals">'+esc(name(route.from))+' ← '+esc(name(route.to))+'</p><p class="minor">'+esc(src?.name||"مصدر قيد التوثيق")+'</p>'+partialNotice+stopHtml+trainSelect+'<div class="route-actions"><button type="button" class="button outline route-open" data-route="'+esc(route.id)+'">فتح لوحة المسار</button>'+link+'</div></article>';
+ return '<article class="route-item" data-route-id="'+esc(route.id)+'"><div class="route-top"><span class="tag">'+esc(categoryLabel[route.category]||route.category)+'</span>'+routesStatus+'</div><h4>'+esc(route.name)+'</h4><p class="route-terminals">'+esc(name(route.from))+' ← '+esc(name(route.to))+'</p><p class="minor">'+esc(src?.name||"مصدر قيد التوثيق")+'</p>'+partialNotice+stopHtml+trainSelect+'<div class="route-actions">'+saveButton('route',route.id,route.name)+'<button type="button" class="button outline route-open" data-route="'+esc(route.id)+'">فتح لوحة المسار</button>'+link+'</div></article>';
 }
 function fillRouteCatalog(){
  const groups=state.lines.filter(line=>!state.category||line.category===state.category)
