@@ -26,7 +26,7 @@ jobs:
       - name: Prepare static site
         run: |
           mkdir _site
-          cp -r index.html about.html 404.html sectors assets manifest.json service-worker.js robots.txt sitemap.xml _site/
+          cp -r index.html about.html 404.html favicon.ico sectors assets manifest.json service-worker.js robots.txt sitemap.xml _site/
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site

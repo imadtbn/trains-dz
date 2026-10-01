@@ -29,7 +29,12 @@ function updateIndexing(){
  const first=trip.stop_times[0],last=trip.stop_times.at(-1),url=canonicalTrip();
  const name=`قطار ${station(first.station_id)} إلى ${station(last.station_id)}${trip.train_number?' رقم '+trip.train_number:''}`;
  const description=`مواقيت ومحطات ${name}، ${daysLabel()}، وفق صورة جدول SNTF. الأوقات مجدولة وليست تتبعًا مباشرًا.`;
- const trainStation=id=>({ '@type':'TrainStation',name:station(id) });
+ const trainStation=id=>{
+  const data=stations.find(s=>s.id===id),result={'@type':'TrainStation',name:station(id),'@id':'https://imadtbn.github.io/trains-dz/sectors/sntf-trains.html?station='+encodeURIComponent(id)};
+  if(data?.name_fr)result.alternateName=data.name_fr;
+  if(data?.geo_verified===true&&Number.isFinite(data.lat)&&Number.isFinite(data.lon))result.geo={'@type':'GeoCoordinates',latitude:data.lat,longitude:data.lon};
+  return result;
+ };
  const service={
   '@type':'TrainTrip','@id':url+'#train-trip',name,description,url,
   departureStation:trainStation(first.station_id),arrivalStation:trainStation(last.station_id),
@@ -46,7 +51,7 @@ function updateIndexing(){
   if(arrivalTime)service.arrivalTime=arrivalTime;
  }
  const schema={'@context':'https://schema.org','@graph':[
-  {'@type':'WebPage','@id':url+'#webpage',url,name,description,inLanguage:'ar-DZ',mainEntity:{'@id':service['@id']},
+  {'@type':'WebPage','@id':url+'#webpage',url,name,description,inLanguage:'ar-DZ',isPartOf:{'@id':'https://imadtbn.github.io/trains-dz/#website'},publisher:{'@id':'https://imadtbn.github.io/trains-dz/#publisher'},mainEntity:{'@id':service['@id']},
    breadcrumb:{'@id':url+'#breadcrumb'}},
   {'@type':'BreadcrumbList','@id':url+'#breadcrumb',itemListElement:[
    {'@type':'ListItem',position:1,name:'الرئيسية',item:'https://imadtbn.github.io/trains-dz/'},
