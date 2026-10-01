@@ -2107,3 +2107,65 @@ h3 {
 .station-actions .station-save{border:1px solid #bed5c8}
 @media(max-width:760px){.rail-picker{width:100%;grid-column:1/-1}.rail-picker .station-suggestions{max-height:260px;max-height:min(260px,40dvh)}.rail-picker .station-suggestions li{min-height:50px;flex-wrap:wrap;gap:3px 10px}.station-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.station-actions .station-save,.station-actions .station-locate{width:100%;padding:10px 8px;font-size:12px;white-space:normal}.station-actions .station-locate span{flex-shrink:0}}
 @media(max-width:360px){.station-actions{grid-template-columns:1fr}}
+
+/* Touch-friendly controls scoped to the railway route catalogue. */
+@media (max-width: 760px) {
+  #route-catalog .route-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  #route-catalog .route-actions > * {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    min-height: 48px;
+    margin: 0;
+    padding: 11px 10px;
+    border: 1px solid #c9dfd3;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.6;
+    text-align: center;
+    text-decoration: none;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    touch-action: manipulation;
+  }
+  #route-catalog .route-actions > .photo-source {
+    grid-column: 1 / -1;
+    background: #eff6ef;
+    color: #09644e;
+  }
+  #route-catalog .route-item select {
+    min-width: 0;
+    min-height: 48px;
+    font-size: 16px;
+  }
+  #route-catalog .route-stops > summary,
+  #route-catalog .corridor-note > summary {
+    min-height: 44px;
+    padding-block: 10px;
+    line-height: 1.7;
+  }
+  #route-catalog .trip-timeline > .photo-source {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #c9dfd3;
+    border-radius: 9px;
+    background: #eff6ef;
+  }
+}
+@media (max-width: 420px) {
+  #route-catalog .route-actions { grid-template-columns: minmax(0, 1fr); }
+}
