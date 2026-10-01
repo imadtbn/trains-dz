@@ -1,3 +1,4 @@
+import {stationPicker} from '../station-search.js?v=20261001-search8';
 import {saveButton} from '../favorites-store.js?v=20261001-favorites';
 import {dayParts,dayISO,recordsAtStation,eligible,formatTime,countdown,classify,mins} from "./engine.js";
 import {planJourney} from "./planner.js";
@@ -6,6 +7,9 @@ const dataRoot=new URL("../../data/sntf/",import.meta.url);
 const $=id=>document.getElementById(id);
 const esc=x=>String(x??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const state={stations:[],routes:[],lines:[],category:"",allowedStopIds:null,trips:[],calendars:[],exceptions:[],holidays:[],holidaysComplete:false,sources:[],selected:null,route:"",user:null,map:null,mapPending:null,markers:[],userMarker:null,activePopup:null,activeTask:"search",boardMode:"departures",boardLimit:{departure:20,arrival:20},lastMinute:"",busy:false,journeys:[],journeyStations:[],boardStations:[],journeyResults:null,journeyLimit:{direct:4,connections:3}};
+const journeyPickers=Object.fromEntries(['from','to'].map(kind=>[kind,stationPicker($(kind==='from'?'journey-origin':'journey-destination'),()=>state.journeyStations)]));
+const boardPicker=stationPicker($('board-picker'),()=>state.boardStations,{onChoose:s=>chooseStation(s.id,{focusMap:true})});
+const mapPicker=stationPicker($('map-picker'),()=>state.stations.filter(allowedOnRoute),{onChoose:s=>chooseStation(s.id,{focusMap:true})});
 let mapExpanded=false,nativeMapFullscreen=false;
 function setMapExpanded(expanded){
  mapExpanded=expanded;
@@ -92,18 +96,13 @@ function fillRouteOptions(){
  info.textContent=count+" مسارًا متاحًا ضمن "+categoryLabel[state.category]+"؛ اختر اتجاهًا لعرض محطاته ومواقيته.";
 }
 function listStations(){
- const term=$("station-search").value.trim().toLocaleLowerCase("ar");
- let matches=state.stations.filter(s=>allowedOnRoute(s)&&[s.name,s.name_fr,...(s.sntf_names||[]),...(s.aliases||[])].join(" ").toLocaleLowerCase().includes(term));
- if(state.user)matches=matches.sort((a,b)=>km(state.user,a)-km(state.user,b));
- else matches=matches.sort((a,b)=>a.name.localeCompare(b.name,"ar"));
- $("station-results").innerHTML=matches.length?matches.slice(0,50).map(s=>'<button type="button" class="station-option" data-id="'+esc(s.id)+'" aria-pressed="'+(s.id===state.selected)+'"><span>'+esc(s.name)+' <small>'+esc(s.name_fr)+'</small></span><small>'+(state.user&&verifiedGeo(s)?km(state.user,s).toFixed(1)+" كم":"عرض اللوحة")+'</small></button>').join(""):'<div class="empty">لا توجد محطات مطابقة.</div>';
  const mapped=state.stations.filter(s=>allowedOnRoute(s)&&hasGeo(s));
  $("map-count").textContent=mapped.length+" محطة على الخريطة · "+mapped.filter(s=>!verifiedGeo(s)).length+" موقع قيد التحقق";
 }
 function km(p,s){const d=Math.PI/180,dLat=(s.lat-p.lat)*d,dLon=(s.lon-p.lon)*d,a=Math.sin(dLat/2)**2+Math.cos(p.lat*d)*Math.cos(s.lat*d)*Math.sin(dLon/2)**2;return 6371*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a))}
 function chooseStation(id,{focusMap=false}={}){
  if(!station(id))return;
- state.selected=id;state.boardLimit={departure:20,arrival:20};$("station-search-board").value="";filterBoardStations();$("station").value=id;
+ state.selected=id;state.boardLimit={departure:20,arrival:20};boardPicker.set(station(id));
  $("selected-name").textContent=name(id);
  $("selected-subtitle").textContent=station(id).name_fr+" · المغادرات والوصول حسب التوقفات المدخلة";
  fillStationLines();fillDirections();listStations();renderBoards();
@@ -230,30 +229,14 @@ function journeyCard(item,index){
 function populateJourneyStations(){
  const ids=new Set(state.trips.filter(t=>t.data_status==='source_transcribed'||t.data_status==='verified').flatMap(t=>t.stop_times.filter(s=>s.arrival!=null||s.departure!=null).map(s=>s.station_id)));
  state.journeyStations=state.stations.filter(s=>ids.has(s.id)).sort((a,b)=>a.name.localeCompare(b.name,'ar'));
- for(const kind of ['from','to'])filterJourneyStations(kind);
+
  $('journey-date').value=dayISO(new Date());
  const p=dayParts(new Date());$('journey-after').value=p.hour+':'+p.minute;
 }
-const normalizeStationQuery=value=>String(value||'').normalize('NFKD').replace(/[\u0300-\u036f\u064b-\u065f]/g,'').toLocaleLowerCase('ar').replace(/[أإآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/[^\p{L}\p{N}]/gu,'');
-const stationMatchesQuery=(s,query)=>[s.name,s.name_fr,...(s.sntf_names||[]),...(s.aliases||[])].some(value=>normalizeStationQuery(value).includes(query));
-function filterJourneyStations(kind){
- const input=$('journey-'+kind+'-search'),select=$('journey-'+kind),status=$('journey-'+kind+'-count');
- const query=normalizeStationQuery(input.value),previous=select.value;
- const matches=query?state.journeyStations.filter(s=>stationMatchesQuery(s,query)):state.journeyStations;
- select.replaceChildren(new Option(kind==='from'?'اختر محطة الانطلاق من القائمة':'اختر محطة الوصول من القائمة',''),...matches.map(s=>new Option(s.name,s.id)));
- if(matches.some(s=>s.id===previous))select.value=previous;
- status.textContent=query?(matches.length?matches.length+' محطة مطابقة · اختر من القائمة':'لا توجد محطة مطابقة؛ غيّر عبارة البحث'):'';
-}
-function filterBoardStations(){
- const query=normalizeStationQuery($("station-search-board").value),select=$("station"),previous=select.value;
- const matches=query?state.boardStations.filter(s=>stationMatchesQuery(s,query)):state.boardStations;
- select.replaceChildren(new Option("اختر محطة",""),...matches.map(s=>new Option(s.name+" / "+s.name_fr,s.id)));
- if(matches.some(s=>s.id===previous))select.value=previous;
- $("station-search-board-count").textContent=query?(matches.length?matches.length+" محطة مطابقة · اختر من القائمة":"لا توجد محطة مطابقة؛ غيّر عبارة البحث"):"";
-}
 function searchJourneys(){
+ if(!journeyPickers.from.validate()||!journeyPickers.to.validate())return;
  const origin=$('journey-from').value,destination=$('journey-to').value,date=$('journey-date').value,after=$('journey-after').value;
- if(!origin||!destination){$('journey-results').innerHTML='<div class="empty">اختر محطة الانطلاق والوصول من القائمتين.</div>';return}
+ if(!origin||!destination){$('journey-results').innerHTML='<div class="empty">اختر محطة الانطلاق والوصول من الاقتراحات.</div>';return}
  if(origin===destination){state.journeys=[];state.journeyResults=null;$('journey-results').innerHTML='<div class="empty">اختر محطتين مختلفتين.</div>';return}
  const result=planJourney({trips:state.trips,origin,destination,date,after,calendars:state.calendars,exceptions:state.exceptions,holidays:state.holidays});
  state.journeys=[...result.direct,...result.connections];
@@ -366,7 +349,7 @@ function routeStations(){
   const indices=new Map(order.map((id,i)=>[id,i]));
   allowed=allowed.sort((a,b)=>(indices.get(a.id)??999)-(indices.get(b.id)??999));
  }else allowed=allowed.sort((a,b)=>a.name.localeCompare(b.name,"ar"));
- state.boardStations=allowed;$("station-search-board").value="";filterBoardStations();
+ state.boardStations=allowed;boardPicker.set(allowed.find(s=>s.id===prev));mapPicker.set(null);
  if(prev&&allowed.some(s=>s.id===prev))$("station").value=prev;
  else if(prev){state.selected=null;$("selected-name").textContent="اختر محطة";$("selected-subtitle").textContent="اختر محطة من الخريطة أو القائمة."}
  fillStationLines();listStations();if(state.activeTask==="explore")fillRouteCatalog();fillDirections();renderBoards();refreshMarkers();
@@ -472,7 +455,7 @@ async function start(){
  Object.assign(state,{stations:stations.stations,routes:routes.routes,lines:lines.lines,trips:trips.trips,calendars:calendars.calendars,exceptions:calendars.exceptions||[],sources:sources.sources,holidays:holidays.dates,holidaysComplete:holidays.complete===true});
  populateJourneyStations();
  const initial=new URL(location.href).searchParams;
- for(const side of ['from','to'])if(station(initial.get(side)))$('journey-'+side).value=initial.get(side);
+ for(const side of ['from','to'])if(station(initial.get(side)))journeyPickers[side].set(state.journeyStations.find(s=>s.id===initial.get(side)));
  if(/^\d{4}-\d{2}-\d{2}$/.test(initial.get('date')||'')){$('journey-date').value=initial.get('date');$('journey-after').value='00:00';}
  document.dispatchEvent(new CustomEvent('rail-ready',{detail:{updated:trips.updated||stations.updated}}));
  $("holiday-note").textContent="";
@@ -495,14 +478,7 @@ async function start(){
  }catch(error){$('journey-results').innerHTML='<div class="empty">تعذر تحميل بيانات الرحلات. تحقق من الاتصال ثم أعد تحميل الصفحة.</div>'; $('selected-subtitle').textContent='تعذر تحميل البيانات؛ حاول مجددًا.';$("map").innerHTML='<div class="empty">تعذر تحميل قاعدة البيانات. أعد تحميل الصفحة أو افتح <a href="sntf.html">الجداول المصورة</a>.</div>';$("location-status").textContent=error.message;console.error("DZ Rail:",error)}
 }
 $("station").addEventListener("change",e=>{if(e.target.value)chooseStation(e.target.value,{focusMap:true})});
-$("station-search-board").addEventListener("input",filterBoardStations);
-$("station-search-board").addEventListener("keydown",event=>{if(event.key==="Enter"){event.preventDefault();$("station").focus()}});
 $("journey-form").addEventListener("submit",event=>{event.preventDefault();searchJourneys()});
-for(const kind of ['from','to']){
- const input=$('journey-'+kind+'-search');
- input.addEventListener('input',()=>filterJourneyStations(kind));
- input.addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();$('journey-'+kind).focus()}});
-}
 $("journey-date").addEventListener("change",()=>{$("journey-after").value="00:00"});
 $("journey-results").addEventListener("click",event=>{
  const more=event.target.closest('[data-more-journeys]');
@@ -512,8 +488,6 @@ $("journey-results").addEventListener("click",event=>{
  if(!Number.isInteger(index)||!state.journeys[index])return;
  if(calendar)addCalendar(state.journeys[index]);else addForegroundReminder(state.journeys[index]);
 });
-$("station-search").addEventListener("input",listStations);
-$("station-results").addEventListener("click",e=>{const button=e.target.closest("[data-id]");if(button)chooseStation(button.dataset.id,{focusMap:true})});
 $("category-filter").addEventListener("change",e=>setCategoryFilters(e.target.value,"",true));
 $("route-filter").addEventListener("change",e=>setCategoryFilters(state.category,e.target.value,true));
 $("direction").addEventListener("change",()=>{state.boardLimit={departure:20,arrival:20};renderBoards()});
@@ -570,8 +544,7 @@ window.matchMedia("(max-width:680px)").addEventListener("change",()=>boardTab(st
 boardTab("departures");tick();setInterval(tick,1000);start();
 
 $('swap-stations').addEventListener('click',()=>{
- const from=$('journey-from').value,to=$('journey-to').value,date=$('journey-date').value,after=$('journey-after').value;
- $('journey-from-search').value='';$('journey-to-search').value='';populateJourneyStations();
- $('journey-from').value=to;$('journey-to').value=from;$('journey-date').value=date;$('journey-after').value=after;
+ const from=journeyPickers.from.get(),to=journeyPickers.to.get();
+ journeyPickers.from.set(to);journeyPickers.to.set(from);
 });
 window.addEventListener('hashchange',()=>{const match=location.hash.match(/^#panel-(search|station|explore)$/);if(match)showTask(match[1]);});

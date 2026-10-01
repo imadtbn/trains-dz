@@ -2089,3 +2089,21 @@ h3 {
     letter-spacing: 1px;
   }
 }
+
+/* Shared, bounded autocomplete in the three railway panels. */
+.rail-picker{position:relative;min-width:0;align-content:start}
+.rail-picker:focus-within{z-index:1100}
+.rail-picker .station-input-wrap>input[type=search]{font-size:16px;color:var(--ink);margin:0;min-height:50px}
+.rail-picker .station-suggestions{z-index:1100;color:var(--ink);text-shadow:none;text-align:start}
+.rail-picker .station-suggestions small{color:#526b5e}
+.rail-picker .picker-note{margin:0;min-height:22px}
+.station-hero{overflow:visible}
+.station-hero .rail-picker{margin-top:18px}
+.station-hero .picker-note{color:#d8e9df}
+.map-filters #map-picker{grid-column:1/-1;width:100%}
+.map-filters .station-suggestions{grid-template-columns:none}
+.station-actions{display:flex;flex-wrap:wrap;align-items:stretch;gap:12px;margin:20px 0 8px}
+.station-actions .station-save,.station-actions .station-locate{display:inline-flex;align-items:center;justify-content:center;flex:0 1 auto;min-height:48px;margin:0;padding:10px 18px;border-radius:10px;font-size:14px;line-height:1.6}
+.station-actions .station-save{border:1px solid #bed5c8}
+@media(max-width:760px){.rail-picker{width:100%;grid-column:1/-1}.rail-picker .station-suggestions{max-height:260px;max-height:min(260px,40dvh)}.rail-picker .station-suggestions li{min-height:50px;flex-wrap:wrap;gap:3px 10px}.station-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.station-actions .station-save,.station-actions .station-locate{width:100%;padding:10px 8px;font-size:12px;white-space:normal}.station-actions .station-locate span{flex-shrink:0}}
+@media(max-width:360px){.station-actions{grid-template-columns:1fr}}

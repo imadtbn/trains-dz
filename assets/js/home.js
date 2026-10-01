@@ -1,5 +1,5 @@
 import {dayISO} from './sntf-trains/engine.js';
-import {stationPicker} from './station-search.js?v=20261001-favorites';
+import {stationPicker} from './station-search.js?v=20261001-search8';
 import {readFavorites} from './favorites-store.js?v=20261001-favorites';
 const form=document.querySelector('#home-search'),status=document.querySelector('#home-status');let from,to;
 form.elements.date.value=dayISO();
