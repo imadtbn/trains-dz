@@ -1635,25 +1635,25 @@ h3 {
 }
 /* Replace any --card-image below with a local JPG/WebP of your choice. */
 .feature-board {
-  --card-image: url("../images/cards/station-board.svg");
+  --card-image: url("../images/cards/station-board.jpg");
 }
 .feature-map {
-  --card-image: url("../images/cards/network-map.png");
+  --card-image: url("../images/cards/network-map.jpg");
 }
 .feature-timetables {
-  --card-image: url("../images/cards/timetables.svg");
+  --card-image: url("../images/cards/timetables.jpg");
 }
 .region-suburban {
-  --card-image: url("../images/cards/suburban.svg");
+  --card-image: url("../images/cards/suburban.jpg");
 }
 .region-eastern {
-  --card-image: url("../images/cards/eastern.svg");
+  --card-image: url("../images/cards/eastern.jpg");
 }
 .region-western {
-  --card-image: url("../images/cards/western.svg");
+  --card-image: url("../images/cards/western.jpg");
 }
 .region-sahara {
-  --card-image: url("../images/cards/sahara.svg");
+  --card-image: url("../images/cards/sahara.jpg");
 }
 .region-international {
   --card-image: url("../images/cards/international.jpg");
