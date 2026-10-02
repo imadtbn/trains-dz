@@ -2175,3 +2175,130 @@ h3 {
 .task-tabs a.task-tab[aria-current=page]{background:var(--navy);color:white;border-color:var(--navy)}
 .task-tabs a.task-tab[aria-current=page] small{color:#c4dbd2}
 .task-tabs a.task-tab[aria-current=page] .task-tab-icon{background:#ffffff15;color:#cae899}
+
+
+/* Service page hero — 2026-10-02 */
+.service-hero {
+  position: relative;
+  min-height: 330px;
+  margin: 30px 0 24px;
+  border-radius: 22px;
+  overflow: hidden;
+  background: var(--navy);
+  color: #fff;
+  isolation: isolate;
+  box-shadow: 0 18px 44px rgba(16,46,53,.12);
+}
+.service-hero__media {
+  position: absolute;
+  inset: 0;
+  background-position: center;
+  background-size: cover;
+  transform: scale(1.02);
+  z-index: -3;
+}
+.service-hero--search .service-hero__media {
+  background-image: url("../images/hero-trains.png");
+}
+.service-hero--station .service-hero__media {
+  background-image: url("../images/cards/station-board.jpg");
+}
+.service-hero--map .service-hero__media {
+  background-image: url("../images/cards/network-map.jpg");
+}
+.service-hero__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background:
+    linear-gradient(90deg, rgba(8,34,39,.96) 0%, rgba(12,48,49,.87) 42%, rgba(12,48,49,.38) 72%, rgba(12,48,49,.18) 100%),
+    linear-gradient(0deg, rgba(8,34,39,.46), transparent 58%);
+}
+.service-hero__content {
+  min-height: 330px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 28px;
+  padding: 42px;
+}
+.service-hero__copy {
+  max-width: 650px;
+}
+.service-hero__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 12px;
+  color: #c2e48b;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .3px;
+}
+.service-hero__label::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #c2e48b;
+  box-shadow: 0 0 0 5px rgba(194,228,139,.12);
+}
+.service-hero h1 {
+  margin: 0 0 12px;
+  color: #fff;
+  font-size: clamp(34px, 4vw, 54px);
+  line-height: 1.25;
+}
+.service-hero p {
+  max-width: 590px;
+  margin: 0;
+  color: #d9e7e1;
+  font-size: 15px;
+  line-height: 1.9;
+}
+.service-hero .clock-box {
+  min-width: 178px;
+  margin: 0;
+  padding: 14px 17px;
+  border: 1px solid rgba(255,255,255,.22);
+  background: rgba(9,34,37,.72);
+  backdrop-filter: blur(8px);
+}
+.service-hero .clock-box span,
+.service-hero .clock-box small {
+  color: #c7d9d2;
+}
+.service-hero .clock-box time {
+  color: #fff;
+}
+@media (max-width: 760px) {
+  .service-hero {
+    min-height: 305px;
+    margin-top: 18px;
+    border-radius: 16px;
+  }
+  .service-hero__media {
+    background-position: center;
+  }
+  .service-hero__overlay {
+    background: linear-gradient(0deg, rgba(8,34,39,.96) 0%, rgba(8,34,39,.80) 56%, rgba(8,34,39,.38) 100%);
+  }
+  .service-hero__content {
+    min-height: 305px;
+    grid-template-columns: 1fr;
+    align-content: end;
+    gap: 18px;
+    padding: 24px 20px;
+  }
+  .service-hero h1 {
+    font-size: 34px;
+  }
+  .service-hero p {
+    font-size: 13px;
+    line-height: 1.8;
+  }
+  .service-hero .clock-box {
+    width: 100%;
+    min-width: 0;
+  }
+}
