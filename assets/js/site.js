@@ -11,3 +11,12 @@ install?.addEventListener('click',async()=>{if(!installPrompt)return;await insta
 window.addEventListener('appinstalled',()=>{install.hidden=true});
 const root=new URL('../../',document.currentScript.src);
 if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register(new URL('service-worker.js',root)).catch(()=>{}));
+
+// Keep Algeria time visible independently of railway data loading.
+const clockTime=document.getElementById('clock'),clockDate=document.getElementById('date-label');
+if(clockTime&&clockDate){
+ const timeFormat=new Intl.DateTimeFormat('ar-DZ-u-nu-latn',{timeZone:'Africa/Algiers',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'});
+ const dateFormat=new Intl.DateTimeFormat('ar-DZ',{timeZone:'Africa/Algiers',dateStyle:'full'});
+ function updateAlgeriaClock(){const now=new Date();clockTime.textContent=timeFormat.format(now);clockDate.textContent=dateFormat.format(now)}
+ updateAlgeriaClock();setInterval(updateAlgeriaClock,1000);
+}

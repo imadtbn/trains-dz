@@ -272,9 +272,7 @@ async function addForegroundReminder(item){
 }
 
 function tick(){
- const now=new Date(),parts=dayParts(now),clock=[parts.hour,parts.minute,parts.second].join(":"),key=[parts.year,parts.month,parts.day,parts.hour,parts.minute].join("-");
- $("clock").textContent=clock;
- $("date-label").textContent=new Intl.DateTimeFormat("ar-DZ",{timeZone:"Africa/Algiers",dateStyle:"full"}).format(now);
+ const now=new Date(),parts=dayParts(now),key=[parts.year,parts.month,parts.day,parts.hour,parts.minute].join("-");
  document.querySelectorAll(".countdown").forEach(el=>{const remaining=Math.floor((Number(el.dataset.target)-now.getTime())/1000);el.textContent=countdown(remaining);el.closest(".event")?.classList.toggle("imminent",remaining>=0&&remaining<=900)});
  if(key!==state.lastMinute){state.lastMinute=key;renderBoards(now);if(state.activePopup)renderPopupSchedule(state.activePopup.root,state.activePopup.stationId,now);checkReminders(now.getTime())}
 }
