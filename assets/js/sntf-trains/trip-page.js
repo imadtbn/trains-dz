@@ -31,7 +31,7 @@ function updateIndexing(){
  const name=`قطار ${station(first.station_id)} إلى ${station(last.station_id)}${trip.train_number?' رقم '+trip.train_number:''}`;
  const description=`مواقيت ومحطات ${name}، ${daysLabel()}، وفق صورة جدول SNTF. الأوقات مجدولة وليست تتبعًا مباشرًا.`;
  const trainStation=id=>{
-  const data=stations.find(s=>s.id===id),result={'@type':'TrainStation',name:station(id),'@id':'https://imadtbn.github.io/trains-dz/sectors/sntf-trains.html?station='+encodeURIComponent(id)};
+  const data=stations.find(s=>s.id===id),result={'@type':'TrainStation',name:station(id),'@id':'https://imadtbn.github.io/trains-dz/sectors/sntf-station.html?station='+encodeURIComponent(id)};
   if(data?.name_fr)result.alternateName=data.name_fr;
   if(data?.geo_verified===true&&Number.isFinite(data.lat)&&Number.isFinite(data.lon))result.geo={'@type':'GeoCoordinates',latitude:data.lat,longitude:data.lon};
   return result;
@@ -56,7 +56,7 @@ function updateIndexing(){
    breadcrumb:{'@id':url+'#breadcrumb'}},
   {'@type':'BreadcrumbList','@id':url+'#breadcrumb',itemListElement:[
    {'@type':'ListItem',position:1,name:'الرئيسية',item:'https://imadtbn.github.io/trains-dz/'},
-   {'@type':'ListItem',position:2,name:'منصة القطارات',item:'https://imadtbn.github.io/trains-dz/sectors/sntf-trains.html'},
+   {'@type':'ListItem',position:2,name:'منصة القطارات',item:'https://imadtbn.github.io/trains-dz/sectors/sntf-search.html'},
    {'@type':'ListItem',position:3,name,item:url}
   ]},service
  ]};
@@ -126,7 +126,7 @@ function render(){
  const note=trip.time_status==='partial'?'<p class="notice">الصورة تنشر وقت الانطلاق فقط؛ أوقات التوقف والوصول غير منشورة، والمحطات المبيّنة دون وقت لا تمثل وعدًا بالتوقف.</p>':'';
  const img=image?`<button class="source-preview" id="open-photo" type="button" aria-label="تكبير صورة الجدول"><img src="${esc(image)}" alt="صورة جدول SNTF للرحلة" loading="lazy"></button>`:'<p class="empty">لا توجد صورة محددة لهذه الرحلة.</p>';
  const canRemind=runsOn(trip,date,calendars,exceptions,holidays)&&trip.stop_times.some(s=>s.station_id===(from||trip.stop_times[0].station_id)&&Number.isFinite(mins(s.departure)));
- const actions=`${saveButton('trip',trip.trip_id,route?.name+' · '+(trip.train_number||''))}${canRemind?'<button class="button" type="button" id="calendar-trip">تذكير تقويم قبل 30 دقيقة</button>':''}<a class="button" href="sntf-trains.html#journey-planner">البحث عن رحلة أخرى</a><button class="button" type="button" id="share-trip">مشاركة الرحلة</button>`;
+ const actions=`${saveButton('trip',trip.trip_id,route?.name+' · '+(trip.train_number||''))}${canRemind?'<button class="button" type="button" id="calendar-trip">تذكير تقويم قبل 30 دقيقة</button>':''}<a class="button" href="sntf-search.html">البحث عن رحلة أخرى</a><button class="button" type="button" id="share-trip">مشاركة الرحلة</button>`;
  $('trip-content').innerHTML=`<section class="trip-hero"><span class="eyebrow">${esc(route?.category||'رحلة قطار')} · جدول مجدول</span><h1>${esc(station(first.station_id))} ← ${esc(station(last.station_id))}</h1><p>${esc(route?.name||'تفاصيل الرحلة')} · ${esc(readableDate(date))}</p><div class="chips"><span class="chip">القطار: ${esc(trip.train_number||'رقم غير منشور')}</span><span class="chip">${esc(daysLabel())}</span><span class="chip">المدة: ${esc(diff)}</span></div><div class="time-grid"><div><small>الانطلاق</small><strong dir="ltr">${esc(summaryTime(first,'departure'))}</strong></div><div><small>الوصول</small><strong dir="ltr">${esc(summaryTime(last,'arrival'))}</strong></div></div></section>
  <section class="panel"><h2>تاريخ السفر وأيام التشغيل</h2><div class="date-row"><label for="travel-date">اختر تاريخًا لعرض حالة التشغيل<input id="travel-date" type="date" value="${esc(date)}"></label><span class="chip">${esc(daysLabel())}</span></div><div id="operating-status">${dateStatus()}</div><dl class="meta-grid"><div><dt>رقم القطار</dt><dd>${esc(trip.train_number||'غير منشور')}</dd></div><div><dt>بداية سريان الجدول المنشورة</dt><dd>${esc(validity||'غير محددة')}</dd></div><div><dt>عدد المحطات المدرجة</dt><dd>${trip.stop_times.length}</dd></div></dl><p class="notice">هذه أوقات مجدولة من صورة SNTF الرسمية، وليست بيانات تتبع حي أو إعلانًا بتأخير القطار.</p></section>
  <section class="panel"><h2>جميع المحطات والأوقات</h2><p>يظهر وقت الوصول والمغادرة منفصلين عندما ينشر الجدول قيمتين مختلفتين. الشرطة تعني أن الوقت غير منشور.</p>${note}<table class="time-table"><thead><tr><th scope="col">المحطة</th><th scope="col">الوصول</th><th scope="col">المغادرة</th></tr></thead><tbody>${stopsHtml()}</tbody></table></section>
@@ -152,10 +152,10 @@ $('photo-dialog').addEventListener('click',event=>{if(event.target===$('photo-di
 async function start(){
  try{
   const id=params.get('trip');
-  if(!id){$('trip-content').innerHTML='<div class="empty">اختر رحلة من <a href="sntf-trains.html#journey-planner">نتائج البحث</a> لعرض تفاصيلها.</div>';return}
+  if(!id){$('trip-content').innerHTML='<div class="empty">اختر رحلة من <a href="sntf-search.html">نتائج البحث</a> لعرض تفاصيلها.</div>';return}
   const [sd,rd,td,cd,src,hd]=await Promise.all([read('stations','stations'),read('routes','routes'),read('trips','trips'),read('calendars','calendars'),read('sources','sources'),read('holidays','dates')]);
   trip=td.trips.find(t=>t.trip_id===id&&['source_transcribed','verified'].includes(t.data_status));
-  if(!trip){$('trip-content').innerHTML='<div class="empty">هذه الرحلة غير منشورة أو غير موجودة. <a href="sntf-trains.html#journey-planner">ابحث عن رحلة</a>.</div>';return}
+  if(!trip){$('trip-content').innerHTML='<div class="empty">هذه الرحلة غير منشورة أو غير موجودة. <a href="sntf-search.html">ابحث عن رحلة</a>.</div>';return}
   stations=sd.stations;route=rd.routes.find(r=>r.id===trip.route_id);source=src.sources.find(s=>s.id===trip.source_id);
   calendars=cd.calendars;exceptions=cd.exceptions||[];holidays=hd.dates;complete=hd.complete===true;
   calendar=calendars.find(c=>c.id===trip.service_id);
@@ -165,6 +165,6 @@ async function start(){
   to=trip.stop_times.some(s=>s.station_id===params.get('to'))?params.get('to'):'';
   image=safeImage(source?.url)||safeImage(route?.schedule_image);
   render();
- }catch(error){$('trip-content').innerHTML='<div class="empty">تعذر تحميل تفاصيل الرحلة. <a href="sntf-trains.html">ارجع إلى منصة القطارات</a>.</div>';console.error('DZ Rail trip:',error)}
+ }catch(error){$('trip-content').innerHTML='<div class="empty">تعذر تحميل تفاصيل الرحلة. <a href="sntf-search.html">ارجع إلى منصة القطارات</a>.</div>';console.error('DZ Rail trip:',error)}
 }
 start();

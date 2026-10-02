@@ -1,10 +1,10 @@
 import {readFavorites,toggleFavorite} from './favorites-store.js?v=20261001-favorites';
-const groups={station:{title:'المحطات',link:'sectors/sntf-trains.html#panel-station',cta:'اختر محطة لحفظها'},route:{title:'المسارات',link:'sectors/sntf-trains.html#panel-explore',cta:'استكشف المسارات'},schedule:{title:'جداول الرحلات',link:'sectors/sntf.html',cta:'تصفح الجداول المصورة'}};
+const groups={station:{title:'المحطات',link:'sectors/sntf-station.html',cta:'اختر محطة لحفظها'},route:{title:'المسارات',link:'sectors/sntf-map.html',cta:'استكشف المسارات'},schedule:{title:'جداول الرحلات',link:'sectors/sntf.html',cta:'تصفح الجداول المصورة'}};
 const root=document.querySelector('#saved-groups'),search=document.querySelector('#saved-search'),filter=document.querySelector('#saved-type'),status=document.querySelector('#saved-status');let data={},loaded=false;
 const typeGroup=type=>['trip','timetable'].includes(type)?'schedule':type;
 function resolve(entry){let record,url,name=entry.name,detail='';const available=loaded&&data[entry.type];
- if(entry.type==='station'){record=data.station?.find(x=>x.id===entry.id);if(record){name=record.name;detail=record.name_fr;url='sectors/sntf-trains.html?station='+encodeURIComponent(entry.id)}}
- if(entry.type==='route'){record=data.route?.find(x=>x.id===entry.id&&!x.catalog_status);if(record){name=record.name;detail='مسار واتجاه';url='sectors/sntf-trains.html?route='+encodeURIComponent(entry.id)}}
+ if(entry.type==='station'){record=data.station?.find(x=>x.id===entry.id);if(record){name=record.name;detail=record.name_fr;url='sectors/sntf-station.html?station='+encodeURIComponent(entry.id)}}
+ if(entry.type==='route'){record=data.route?.find(x=>x.id===entry.id&&!x.catalog_status);if(record){name=record.name;detail='مسار واتجاه';url='sectors/sntf-map.html?route='+encodeURIComponent(entry.id)}}
  if(entry.type==='timetable'){record=data.timetable?.find(x=>x.id===entry.id);if(record){name=record.alt;detail='جدول مصوّر';url='sectors/sntf.html?table='+encodeURIComponent(entry.id)}}
  if(entry.type==='trip'){record=data.trip?.find(x=>x.trip_id===entry.id&&['verified','source_transcribed'].includes(x.data_status));if(record){const first=data.station?.find(s=>s.id===record.stop_times[0]?.station_id)?.name,last=data.station?.find(s=>s.id===record.stop_times.at(-1)?.station_id)?.name;name=first&&last?first+' ← '+last:name;detail='جدول القطار '+(record.train_number||'');url='sectors/sntf-trip.html?trip='+encodeURIComponent(entry.id)}}
  return {name,detail:record?detail:available?'لم يعد هذا العنصر متاحًا في البيانات الحالية.':'تعذر تحديث تفاصيل هذا العنصر؛ المحفوظة ما زالت على جهازك.',url};

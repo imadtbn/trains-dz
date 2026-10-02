@@ -2169,3 +2169,9 @@ h3 {
 @media (max-width: 420px) {
   #route-catalog .route-actions { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* Independent railway pages retain the familiar three-service navigation. */
+.task-tabs a.task-tab{text-decoration:none;color:var(--ink)}
+.task-tabs a.task-tab[aria-current=page]{background:var(--navy);color:white;border-color:var(--navy)}
+.task-tabs a.task-tab[aria-current=page] small{color:#c4dbd2}
+.task-tabs a.task-tab[aria-current=page] .task-tab-icon{background:#ffffff15;color:#cae899}
