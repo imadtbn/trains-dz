@@ -744,8 +744,8 @@
       "id": "ain_mlila",
       "name": "عين مليلة",
       "name_fr": "Aïn M'lila",
-      "lat": 36.0380111,
-      "lon": 6.5885881,
+      "lat": 36.038513,
+      "lon": 6.586320,
       "geo_source": "Google Maps",
       "geo_verified": true
     },
@@ -944,8 +944,8 @@
       "id": "oued_taria",
       "name": "وادي التاغية",
       "name_fr": "Oued Taria",
-      "lat": 35.023394,
-      "lon": 0.106352,
+      "lat": 35.124445,
+      "lon": 0.091066,
       "geo_source": "Google Maps",
       "geo_verified": true
     },
@@ -1474,6 +1474,15 @@
       "geo_source": "Google Maps",
       "geo_verified": true
     },
+        {
+      "id": "saida",
+      "name": "سعيدة",
+      "name_fr": "Saïda",
+      "lat": 34.842021,
+      "lon": 0.120109,
+      "geo_source": "Google Maps",
+      "geo_verified": true
+    },
     {
       "id": "telagh",
       "name": "تلاغ",
@@ -1640,8 +1649,8 @@
       "id": "laghouat",
       "name": "الأغواط",
       "name_fr": "Laghouat",
-      "lat": 33.7989939,
-      "lon": 2.821112,
+      "lat": 33.798630,
+      "lon": 2.819747,
       "geo_source": "Google Maps",
       "geo_verified": true
     },
@@ -2374,8 +2383,8 @@
       "id": "sidi_ladjel",
       "name": "سيدي لعجل",
       "name_fr": "Sidi Ladjel",
-      "lat": 35.9800765,
-      "lon": 6.6915054,
+      "lat": 35.452892,
+      "lon": 2.518578,
       "geo_source": "Google Maps",
       "geo_verified": true
     },
