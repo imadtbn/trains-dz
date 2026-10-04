@@ -1,2 +1,2 @@
-import {startRailPage} from './rail-runtime.js?v=20261002-split';
+import {startRailPage} from './rail-runtime.js?v=20261004-viewer-links';
 startRailPage('explore');
