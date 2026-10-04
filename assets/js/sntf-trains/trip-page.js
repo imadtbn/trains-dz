@@ -1,5 +1,6 @@
 import {saveButton} from '../favorites-store.js?v=20261001-favorites';
 import {dayISO,mins,formatTime,runsOn,shiftISO,isHoliday} from './engine.js';
+import {scheduleViewerHref} from './schedule-links.js?v=20261004-viewer-links';
 const root=new URL('../../data/sntf/',import.meta.url);
 const $=id=>document.getElementById(id);
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -18,7 +19,7 @@ const safeImage=value=>{
 };
 async function read(name,key){const response=await fetch(new URL(name+'.json',root),{cache:'no-cache'});if(!response.ok)throw Error('تعذر تحميل '+name);const data=await response.json();if(!Array.isArray(data[key]))throw Error('ملف غير صالح: '+name);return data}
 const params=new URL(location.href).searchParams;
-let trip,route,source,calendar,stations,calendars,exceptions,holidays,complete,date,from,to,image;
+let trip,route,source,calendar,stations,calendars,exceptions,holidays,complete,date,from,to,image,scheduleImages=[];
 const station=id=>stations.find(s=>s.id===id)?.name||id;
 const canonicalTrip=()=>new URL('sntf-trip.html?'+new URLSearchParams({trip:trip.trip_id}),location.href).href;
 const scheduledDateTime=value=>{
@@ -126,11 +127,12 @@ function render(){
  const note=trip.time_status==='partial'?'<p class="notice">الصورة تنشر وقت الانطلاق فقط؛ أوقات التوقف والوصول غير منشورة، والمحطات المبيّنة دون وقت لا تمثل وعدًا بالتوقف.</p>':'';
  const img=image?`<button class="source-preview" id="open-photo" type="button" aria-label="تكبير صورة الجدول"><img src="${esc(image)}" alt="صورة جدول SNTF للرحلة" loading="lazy"></button>`:'<p class="empty">لا توجد صورة محددة لهذه الرحلة.</p>';
  const canRemind=runsOn(trip,date,calendars,exceptions,holidays)&&trip.stop_times.some(s=>s.station_id===(from||trip.stop_times[0].station_id)&&Number.isFinite(mins(s.departure)));
+ const viewer=image?scheduleViewerHref(image,scheduleImages):'';
  const actions=`${saveButton('trip',trip.trip_id,route?.name+' · '+(trip.train_number||''))}${canRemind?'<button class="button" type="button" id="calendar-trip">تذكير تقويم قبل 30 دقيقة</button>':''}<a class="button" href="sntf-search.html">البحث عن رحلة أخرى</a><button class="button" type="button" id="share-trip">مشاركة الرحلة</button>`;
  $('trip-content').innerHTML=`<section class="trip-hero"><span class="eyebrow">${esc(route?.category||'رحلة قطار')} · جدول مجدول</span><h1>${esc(station(first.station_id))} ← ${esc(station(last.station_id))}</h1><p>${esc(route?.name||'تفاصيل الرحلة')} · ${esc(readableDate(date))}</p><div class="chips"><span class="chip">القطار: ${esc(trip.train_number||'رقم غير منشور')}</span><span class="chip">${esc(daysLabel())}</span><span class="chip">المدة: ${esc(diff)}</span></div><div class="time-grid"><div><small>الانطلاق</small><strong dir="ltr">${esc(summaryTime(first,'departure'))}</strong></div><div><small>الوصول</small><strong dir="ltr">${esc(summaryTime(last,'arrival'))}</strong></div></div></section>
  <section class="panel"><h2>تاريخ السفر وأيام التشغيل</h2><div class="date-row"><label for="travel-date">اختر تاريخًا لعرض حالة التشغيل<input id="travel-date" type="date" value="${esc(date)}"></label><span class="chip">${esc(daysLabel())}</span></div><div id="operating-status">${dateStatus()}</div><dl class="meta-grid"><div><dt>رقم القطار</dt><dd>${esc(trip.train_number||'غير منشور')}</dd></div><div><dt>بداية سريان الجدول المنشورة</dt><dd>${esc(validity||'غير محددة')}</dd></div><div><dt>عدد المحطات المدرجة</dt><dd>${trip.stop_times.length}</dd></div></dl><p class="notice">هذه أوقات مجدولة من صورة SNTF الرسمية، وليست بيانات تتبع حي أو إعلانًا بتأخير القطار.</p></section>
  <section class="panel"><h2>جميع المحطات والأوقات</h2><p>يظهر وقت الوصول والمغادرة منفصلين عندما ينشر الجدول قيمتين مختلفتين. الشرطة تعني أن الوقت غير منشور.</p>${note}<table class="time-table"><thead><tr><th scope="col">المحطة</th><th scope="col">الوصول</th><th scope="col">المغادرة</th></tr></thead><tbody>${stopsHtml()}</tbody></table></section>
- <section class="panel"><h2>صورة الجدول الأصلي</h2><div class="source-layout"><div class="source-info"><p><strong>${esc(source?.name||'جدول SNTF المصور')}</strong></p><p>مصدر التوقيت: الصورة المرتبطة بهذه الرحلة. ${esc(source?.notice||'')}</p><div class="actions">${image?`<a class="button primary" href="${esc(image)}" target="_blank" rel="noopener noreferrer">فتح الصورة بالحجم الكامل ↗</a>`:''}${actions}</div><p id="share-status" role="status"></p></div>${img}</div></section>`;
+ <section class="panel"><h2>صورة الجدول الأصلي</h2><div class="source-layout"><div class="source-info"><p><strong>${esc(source?.name||'جدول SNTF المصور')}</strong></p><p>مصدر التوقيت: الصورة المرتبطة بهذه الرحلة. ${esc(source?.notice||'')}</p><div class="actions">${viewer?`<a class="button primary" href="${esc(viewer)}">عرض الجدول المصور ↗</a>`:''}${actions}</div><p id="share-status" role="status"></p></div>${img}</div></section>`;
  $('travel-date').addEventListener('change',event=>{
   if(!validDate(event.target.value))return;
   date=event.target.value;
@@ -153,11 +155,11 @@ async function start(){
  try{
   const id=params.get('trip');
   if(!id){$('trip-content').innerHTML='<div class="empty">اختر رحلة من <a href="sntf-search.html">نتائج البحث</a> لعرض تفاصيلها.</div>';return}
-  const [sd,rd,td,cd,src,hd]=await Promise.all([read('stations','stations'),read('routes','routes'),read('trips','trips'),read('calendars','calendars'),read('sources','sources'),read('holidays','dates')]);
+  const [sd,rd,td,cd,src,hd,gd]=await Promise.all([read('stations','stations'),read('routes','routes'),read('trips','trips'),read('calendars','calendars'),read('sources','sources'),read('holidays','dates'),read('gallery-index','images')]);
   trip=td.trips.find(t=>t.trip_id===id&&['source_transcribed','verified'].includes(t.data_status));
   if(!trip){$('trip-content').innerHTML='<div class="empty">هذه الرحلة غير منشورة أو غير موجودة. <a href="sntf-search.html">ابحث عن رحلة</a>.</div>';return}
   stations=sd.stations;route=rd.routes.find(r=>r.id===trip.route_id);source=src.sources.find(s=>s.id===trip.source_id);
-  calendars=cd.calendars;exceptions=cd.exceptions||[];holidays=hd.dates;complete=hd.complete===true;
+  calendars=cd.calendars;exceptions=cd.exceptions||[];holidays=hd.dates;complete=hd.complete===true;scheduleImages=gd.images;
   calendar=calendars.find(c=>c.id===trip.service_id);
   if(!calendar)throw Error('تقويم الرحلة غير موجود');
   date=validDate(params.get('date'))?params.get('date'):dayISO(new Date());
