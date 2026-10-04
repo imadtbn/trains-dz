@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>عرض الجدول المصور | قطارات الجزائر</title>
+  <meta name="description" content="اعرض جدول قطارات SNTF المصور بوضوح مع أدوات التكبير وملء الشاشة داخل منصة قطارات الجزائر.">
+  <meta name="theme-color" content="#102e35">
+  <link rel="manifest" href="../manifest.json">
+  <link id="schedule-canonical" rel="canonical" href="https://imadtbn.github.io/trains-dz/sectors/sntf-schedule.html">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ar_DZ">
+  <meta id="schedule-og-title" property="og:title" content="عرض الجدول المصور | قطارات الجزائر">
+  <meta id="schedule-og-description" property="og:description" content="اعرض جدول قطارات SNTF المصور بوضوح داخل منصة قطارات الجزائر.">
+  <meta id="schedule-og-url" property="og:url" content="https://imadtbn.github.io/trains-dz/sectors/sntf-schedule.html">
+  <meta id="schedule-og-image" property="og:image" content="https://imadtbn.github.io/trains-dz/assets/images/share.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="../assets/css/sntf-trains.css">
+  <link rel="stylesheet" href="../assets/css/site.css?v=20261004-schedule-viewer">
+  <link rel="stylesheet" href="../assets/css/sntf-schedule.css?v=20261004-1">
+  <link rel="icon" type="image/svg+xml" href="../assets/images/icon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/images/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../assets/images/favicon-16.png">
+  <link rel="shortcut icon" href="../favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/images/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-title" content="قطارات الجزائر">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <script id="schedule-schema" type="application/ld+json"></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5656416032906373" crossorigin="anonymous"></script>
+  <script src="../assets/js/ads.js?v=20261001-2" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">الانتقال إلى الجدول</a>
+  <header class="site-head">
+    <div class="shell head-row">
+      <a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true"><img src="../assets/images/icon.svg" width="43" height="43" alt=""></span><span><strong>قطارات الجزائر</strong><small>TRAINS DZ · دليلك على السكة</small></span></a>
+      <button class="menu-toggle" aria-label="فتح القائمة" aria-expanded="false" aria-controls="site-nav">☰</button>
+      <nav id="site-nav" aria-label="التنقل الرئيسي"><a href="../index.html">الرئيسية</a><a href="sntf-search.html">خطط رحلتك</a><a href="sntf-station.html">لوحة المحطة</a><a href="sntf-map.html">الخريطة</a><a href="sntf.html" aria-current="page">الجداول والخدمات</a><a href="../contact.html">تواصل معنا</a><a href="../favorites.html">المفضلة</a></nav>
+      <button class="install-button" hidden>تثبيت التطبيق ↓</button>
+    </div>
+  </header>
+  <div class="offline-note" role="status" hidden>أنت دون اتصال. قد تكون المواقيت المحفوظة قديمة؛ الصور تحتاج اتصالًا إذا لم تكن محفوظة.</div>
+
+  <main class="shell schedule-page" id="main">
+    <nav class="breadcrumbs" aria-label="مسار الصفحة"><a href="../index.html">الرئيسية</a> / <a href="sntf.html">الجداول والخدمات</a> / <span id="breadcrumb-title">الجدول المصور</span></nav>
+
+    <section class="home-hero page-hero schedule-hero" aria-labelledby="schedule-title">
+      <div class="hero-layout">
+        <div class="hero-copy">
+          <span class="hero-label"><i aria-hidden="true"></i><span id="schedule-category">جدول مصور</span></span>
+          <h1 id="schedule-title">الجدول المصور</h1>
+          <p id="schedule-summary">راجع الجدول المصور ومواقيت الرحلات بوضوح، مع إمكانية التكبير والعرض بملء الشاشة.</p>
+          <a class="button hero-action" href="#schedule-viewer">عرض الجدول <span aria-hidden="true">←</span></a>
+          <div class="clock-box"><span>توقيت الجزائر</span><time id="clock" aria-live="off" dir="ltr">--:--:--</time><small id="date-label">—</small></div>
+        </div>
+        <div class="rail-art rail-art--photo" aria-hidden="true">
+          <img class="rail-photo" src="../assets/images/cards/timetables.jpg" alt="" width="750" height="375" fetchpriority="high" decoding="async">
+          <div class="art-top"><span>TRAINS DZ</span><span>رحلة عبر الجزائر</span></div>
+          <div class="art-bottom"><span id="hero-art-label">الجدول المصور</span><span>↖</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="schedule-meta" aria-label="معلومات الجدول">
+      <div><span>المسار</span><strong id="meta-route">—</strong></div>
+      <div><span>التصنيف</span><strong id="meta-category">—</strong></div>
+      <div><span>المصدر</span><strong id="meta-source">SNTF</strong></div>
+      <button class="schedule-share share-open" type="button" aria-haspopup="dialog" aria-controls="share-dialog"><span aria-hidden="true">↗</span> مشاركة</button>
+    </section>
+
+    <section class="schedule-viewer-card" id="schedule-viewer" aria-labelledby="viewer-heading">
+      <div class="schedule-viewer-head">
+        <div><span class="eyebrow">النسخة المصورة</span><h2 id="viewer-heading">عرض الجدول</h2></div>
+        <div class="schedule-tools" aria-label="أدوات عرض الجدول">
+          <button id="zoom-out" type="button" aria-label="تصغير الجدول">−</button>
+          <output id="zoom-level" aria-live="polite">100%</output>
+          <button id="zoom-in" type="button" aria-label="تكبير الجدول">+</button>
+          <button id="zoom-reset" type="button">إعادة الحجم</button>
+          <button id="open-fullscreen" type="button">ملء الشاشة</button>
+        </div>
+      </div>
+      <div class="schedule-canvas" id="schedule-canvas" tabindex="0" aria-label="منطقة عرض الجدول؛ يمكن التمرير بعد التكبير">
+        <div class="schedule-loading" id="schedule-loading" role="status">يجري تحميل الجدول…</div>
+        <img id="schedule-image" alt="" draggable="false" fetchpriority="high" decoding="async" hidden>
+      </div>
+      <div class="schedule-actions">
+        <a id="open-original" class="button outline" target="_blank" rel="noopener">فتح الصورة الأصلية ↗</a>
+        <a id="explore-route" class="button outline" href="sntf-map.html">استكشف الخط على الخريطة ←</a>
+        <a class="button outline" href="sntf.html">كل الجداول ←</a>
+      </div>
+      <p class="schedule-hint">على الهاتف: استخدم أزرار التكبير أو انقر نقرتين على الجدول، ثم اسحب الصورة لقراءة التفاصيل.</p>
+    </section>
+
+    <aside class="schedule-note" aria-label="ملاحظة حول المواقيت"><strong>ملاحظة</strong><p id="schedule-note-text">المواقيت المعروضة مأخوذة من الجدول المصور المدرج في المنصة. راجع أيام التشغيل وأي تحديثات استثنائية قبل السفر.</p></aside>
+
+    <aside class="ad-container ad-display" aria-label="إعلان"><span class="ad-label">إعلان</span><div class="ad-slot"><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5656416032906373" data-ad-slot="3143411927" data-ad-format="auto" data-full-width-responsive="true"></ins></div></aside>
+  </main>
+
+  <dialog id="fullscreen-dialog" class="schedule-fullscreen" aria-labelledby="fullscreen-title">
+    <div class="dialog-toolbar"><strong id="fullscreen-title">الجدول المصور</strong><button id="fullscreen-close" type="button" aria-label="إغلاق العرض الكامل">×</button></div>
+    <div class="fullscreen-scroll"><img id="fullscreen-image" alt=""></div>
+  </dialog>
+
+  <footer class="site-foot"><div class="shell footer-grid"><div class="share-site"><button class="share-open" type="button" aria-haspopup="dialog" aria-controls="share-dialog"><span aria-hidden="true">↗</span> شارك الموقع</button></div><div><strong>قطارات الجزائر <span dir="ltr">/ Trains DZ</span></strong><p>دليل مستقل لمواقيت القطارات والمحطات. الأوقات مجدولة وليست تتبعًا مباشرًا.</p></div><div><a href="https://www.sntf.dz/" target="_blank" rel="noopener">موقع SNTF الرسمي ↗</a><a href="https://imadtbn.github.io/dz_portal/">البوابة الجزائرية ↗</a><a href="../about.html">عن المنصة والبيانات</a><a href="../contact.html">التواصل والدعم</a><a href="../favorites.html">المفضلة</a></div></div></footer>
+
+  <dialog id="share-dialog" class="share-dialog" aria-labelledby="share-title"><div class="dialog-toolbar"><h2 id="share-title">الطريق أحلى كي نتشاركوه</h2><button type="button" id="share-close" aria-label="إغلاق المشاركة">×</button></div><p>شارك هذا الجدول مع من يرافقك في الرحلة.</p><div class="share-platforms"><button id="share-native" type="button" hidden>مشاركة عبر تطبيقات الجهاز</button><a data-share="whatsapp" target="_blank" rel="noopener noreferrer">WhatsApp</a><a data-share="facebook" target="_blank" rel="noopener noreferrer">Facebook</a><a data-share="telegram" target="_blank" rel="noopener noreferrer">Telegram</a><a data-share="x" target="_blank" rel="noopener noreferrer">X</a><a data-share="linkedin" target="_blank" rel="noopener noreferrer">LinkedIn</a><button type="button" id="share-copy">نسخ الرابط</button></div><label class="share-url-label" for="share-url">رابط الصفحة</label><input id="share-url" type="url" readonly dir="ltr" value=""><p id="share-status-site" role="status" aria-live="polite"></p></dialog>
+
+  <script src="../assets/js/site.js?v=20261002-unified-hero" defer></script>
+  <script type="module" src="../assets/js/schedule-page.js?v=20261004-1"></script>
+  <script src="../assets/js/share.js?v=20261001-2" defer></script>
+</body>
+</html>
