@@ -3,11 +3,12 @@ import {saveButton} from '../favorites-store.js?v=20261001-favorites';
 import {dayParts,dayISO,recordsAtStation,eligible,formatTime,countdown,classify,mins} from "./engine.js";
 import {planJourney} from "./planner.js";
 import {railwayCategories,categoryRoutes,canonicalRouteId,routeTrips,routeStopSummary,lineRoutes,lineSummary,stationLineServices,eligibleStationIdsByCategory} from "./network.js?v=20260928-catalog-audit";
+import {scheduleViewerHref} from "./schedule-links.js?v=20261004-viewer-links";
 export function startRailPage(pageMode){
 const dataRoot=new URL("../../data/sntf/",import.meta.url);
 const $=id=>document.getElementById(id);
 const esc=x=>String(x??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const state={stations:[],routes:[],lines:[],category:"",allowedStopIds:null,trips:[],calendars:[],exceptions:[],holidays:[],holidaysComplete:false,sources:[],selected:null,route:"",user:null,map:null,mapPending:null,markers:[],userMarker:null,activePopup:null,activeTask:pageMode,boardMode:"departures",boardLimit:{departure:20,arrival:20},lastMinute:"",busy:false,journeys:[],journeyStations:[],boardStations:[],journeyResults:null,journeyLimit:{direct:4,connections:3}};
+const state={stations:[],routes:[],lines:[],category:"",allowedStopIds:null,trips:[],calendars:[],exceptions:[],holidays:[],holidaysComplete:false,sources:[],schedules:[],selected:null,route:"",user:null,map:null,mapPending:null,markers:[],userMarker:null,activePopup:null,activeTask:pageMode,boardMode:"departures",boardLimit:{departure:20,arrival:20},lastMinute:"",busy:false,journeys:[],journeyStations:[],boardStations:[],journeyResults:null,journeyLimit:{direct:4,connections:3}};
 const journeyPickers=pageMode==='search'?Object.fromEntries(['from','to'].map(kind=>[kind,stationPicker($(kind==='from'?'journey-origin':'journey-destination'),()=>state.journeyStations)])):{};
 const boardPicker=pageMode==='station'?stationPicker($('board-picker'),()=>state.boardStations,{onChoose:s=>chooseStation(s.id,{focusMap:true})}):null;
 const mapPicker=pageMode==='explore'?stationPicker($('map-picker'),()=>state.stations.filter(allowedOnRoute),{onChoose:s=>chooseStation(s.id,{focusMap:true})}):null;
@@ -162,7 +163,8 @@ function eventHtml(event,kind){
  const subtitle=prevNext?(kind==="departure"?"المحطة التالية: ":"المحطة السابقة: ")+name(prevNext):"";
  const source=state.sources.find(s=>s.id===t.source_id);
  const photo=source?.kind==="official-timetable-image"&&/^https:\/\/imadtbn\.github\.io\/dz_portal\/assets\/train-schedules\//.test(source.url||"")?'../assets/train-schedules/'+source.url.split('/assets/train-schedules/')[1]:route?.schedule_image;
- const link=photo&&(/^(https:\/\/imadtbn\.github\.io\/dz_portal)?\/assets\/train-schedules\//.test(photo)||/^\.\.\/assets\/train-schedules\//.test(photo))?'<a class="photo-source" href="'+esc(photo)+'" target="_blank" rel="noopener noreferrer">عرض صورة الجدول الرسمي ↗</a>':source?.url?.startsWith("https://")?'<a class="photo-source" href="'+esc(source.url)+'" target="_blank" rel="noopener noreferrer">مصدر المواقيت ↗</a>':"";
+ const viewer=photo?scheduleViewerHref(photo,state.schedules):"";
+ const link=viewer?'<a class="photo-source" href="'+esc(viewer)+'">عرض صورة الجدول الرسمي ↗</a>':source?.url?.startsWith("https://")&&!String(source.url).includes("/assets/train-schedules/")?'<a class="photo-source" href="'+esc(source.url)+'" target="_blank" rel="noopener noreferrer">مصدر المواقيت ↗</a>':"";
  const page='<a class="photo-source" href="'+esc(tripPageLink(t,event.serviceDate,state.selected))+'">صفحة الرحلة كاملة ←</a>';
  return '<article class="event '+(event.remaining>=0&&event.remaining<=900?" imminent":"")+'"><div class="event-top"><div><h4>'+esc(kind==="departure"?"إلى "+name(other):"من "+name(other))+'</h4><span class="minor">'+esc(route?.name||"")+'</span></div><time dir="ltr">'+formatTime(time)+'</time></div><div class="event-meta"><span class="tag">رقم القطار: '+esc(t.train_number||"غير محدد")+'</span><span class="tag">'+esc(serviceName(t.service_id))+'</span>'+statusBadge(t)+dateShown+'</div><p>'+esc(subtitle)+'</p><p>'+(kind==="departure"?"المتبقي للمغادرة: ":"المتبقي للوصول: ")+'<span class="countdown" data-target="'+event.timestamp+'" dir="ltr">'+countdown(event.remaining)+'</span></p><p class="minor">'+esc(source?.notice||"الموعد مجدول، وليس تتبعًا مباشرًا.")+'</p>'+page+link+details(event)+'</article>';
 }
@@ -194,8 +196,8 @@ function journeyLeg(leg){
  const stops=leg.trip.stop_times.slice(leg.fromIndex,leg.toIndex+1);
  const route=routeFor(leg.trip.route_id),source=state.sources.find(s=>s.id===leg.trip.source_id);
  const img=source?.kind==='official-timetable-image'?'../assets/train-schedules/'+source.url.split('/assets/train-schedules/')[1]:route?.schedule_image;
- const sourceLink=img&&(/^(https:\/\/imadtbn\.github\.io\/dz_portal)?\/assets\/train-schedules\//.test(img)||/^\.\.\/assets\/train-schedules\//.test(img))
-  ?`<a href="${esc(img)}" target="_blank" rel="noopener noreferrer">صورة الجدول ↗</a>`:'';
+ const viewer=img?scheduleViewerHref(img,state.schedules):'';
+ const sourceLink=viewer?`<a href="${esc(viewer)}">صورة الجدول ↗</a>`:'';
  const list=stops.map((stop,i)=>{
   const arrival=stop.arrival==null?'—':formatTime(stop.arrival),departure=stop.departure==null?'—':formatTime(stop.departure);
   return `<li><span>${esc(name(stop.station_id))}</span><span><time dir="ltr">${esc(arrival)}</time> وصول · <time dir="ltr">${esc(departure)}</time> مغادرة</span></li>`;
@@ -296,7 +298,8 @@ function tripTimeline(trip){
 }
 function routeCard(route){
  const summary=routeStopSummary(route,state.trips),ts=routeTrips(route,state.trips),src=state.sources.find(s=>s.id===route.source);
- const link=route.schedule_image?'<a class="photo-source" href="'+esc(route.schedule_image)+'" target="_blank" rel="noopener noreferrer">'+(route.schedule_image.endsWith(".svg")?"نسخة معاد تنسيقها من الجدول ↗":"الجدول المصور ↗")+'</a>':"";
+ const viewer=route.schedule_image?scheduleViewerHref(route.schedule_image,state.schedules):"";
+ const link=viewer?'<a class="photo-source" href="'+esc(viewer)+'">'+(route.schedule_image.endsWith(".svg")?"نسخة معاد تنسيقها من الجدول ↗":"الجدول المصور ↗")+'</a>':"";
  const stops=summary.known_stops.map((item,i)=>'<li><span>'+ (i+1)+'. '+esc(name(item.station_id))+'</span><small>'+item.train_count+' قطار يتوقف هنا</small></li>').join("");
  const corridor=summary.corridor_only.length?'<details class="corridor-note"><summary>محطات مذكورة بالممر دون توقف منشور ('+summary.corridor_only.length+')</summary><p class="minor">هذه أسماء ظاهرة في جدول الممر، لكنها غير مدرجة كتوقف مؤقت في أي قطار أدخلناه لهذا المسار.</p><p>'+summary.corridor_only.map(name).map(esc).join(" · ")+'</p></details>':"";
  const routesStatus=ts.length?'<span class="tag">'+ts.length+' رحلة منقولة</span>':'<span class="tag warn">المواقيت والتوقفات قيد الإدخال</span>';
@@ -425,8 +428,8 @@ function setCategoryFilters(categoryId="",routeId="",selectFirst=false){
 }
 async function start(){
  try{
- const [stations,routes,lines,trips,calendars,sources,holidays]=await Promise.all([get("stations","stations"),get("routes","routes"),get("lines","lines"),get("trips","trips"),get("calendars","calendars"),get("sources","sources"),get("holidays","dates")]);
- Object.assign(state,{stations:stations.stations,routes:routes.routes,lines:lines.lines,trips:trips.trips,calendars:calendars.calendars,exceptions:calendars.exceptions||[],sources:sources.sources,holidays:holidays.dates,holidaysComplete:holidays.complete===true});
+ const [stations,routes,lines,trips,calendars,sources,holidays,gallery]=await Promise.all([get("stations","stations"),get("routes","routes"),get("lines","lines"),get("trips","trips"),get("calendars","calendars"),get("sources","sources"),get("holidays","dates"),get("gallery-index","images")]);
+ Object.assign(state,{stations:stations.stations,routes:routes.routes,lines:lines.lines,trips:trips.trips,calendars:calendars.calendars,exceptions:calendars.exceptions||[],sources:sources.sources,holidays:holidays.dates,holidaysComplete:holidays.complete===true,schedules:gallery.images});
  const params=new URL(location.href).searchParams;
  if(pageMode==='search'){
   populateJourneyStations();
