@@ -155,6 +155,15 @@
       ]
     },
     {
+      "id": "oran-chlef",
+      "name": "وهران – الشلف",
+      "category": "western",
+      "route_ids": [
+        "oran-chlef",
+        "chlef-oran"
+      ]
+    },
+    {
       "id": "bechar-tindouf",
       "name": "بشار – تندوف",
       "category": "sahara",
