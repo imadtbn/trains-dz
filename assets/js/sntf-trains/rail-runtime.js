@@ -211,7 +211,7 @@ function journeyCard(item,index){
  return `<article class="journey-card"><div class="journey-card-head"><strong>${esc(title)}</strong><span>${journeyTime(first.departure)} ← ${journeyTime(last.arrival)}</span></div><p class="minor">${esc(name(first.from))} ← ${esc(name(last.to))} · المدة ${esc(journeyDuration((last.arrival-first.departure)/60000))}</p><div class="journey-links">${links}</div><details class="journey-extra"><summary>التوقفات والتذكيرات</summary>${journeyLeg(first)}${transfer?journeyLeg(last):''}<div class="journey-actions"><button class="button outline" type="button" data-calendar="${index}">إضافة تذكير إلى التقويم</button><button class="button outline" type="button" data-remind="${index}">تنبيه أثناء فتح الصفحة</button></div></details></article>`;
 }
 function populateJourneyStations(){
- const ids=new Set(state.trips.filter(t=>t.data_status==='source_transcribed'||t.data_status==='verified').flatMap(t=>t.stop_times.filter(s=>s.arrival!=null||s.departure!=null).map(s=>s.station_id)));
+ const ids=new Set(state.trips.filter(t=>t.data_status==='source_transcribed'||t.data_status==='verified').flatMap(t=>t.stop_times.map(s=>s.station_id)));
  state.journeyStations=state.stations.filter(s=>ids.has(s.id)).sort((a,b)=>a.name.localeCompare(b.name,'ar'));
 
  $('journey-date').value=dayISO(new Date());
@@ -227,12 +227,17 @@ function searchJourneys(){
  state.journeyResults={...result,date};state.journeyLimit={direct:4,connections:3};renderJourneyResults();
 }
 function renderJourneyResults(){
- const {direct,connections,date}=state.journeyResults;
+ const {direct,connections,departuresOnly=[],date}=state.journeyResults;
  const holiday=state.holidays.find(h=>(typeof h==='string'?h:h.date)===date);
  const notice=holiday?`<p class="journey-notice">${esc(holiday.name||'يوم عيد')} · فُعّلت قاعدة تشغيل الأعياد لهذا اليوم.</p>`:
   !state.holidaysComplete&&state.journeys.some(x=>[x.first||x,x.second].filter(Boolean).some(leg=>['friday_holiday','weekday_not_friday'].includes(leg.trip.service_id)))?'<p class="journey-notice">رزنامة الأعياد غير مكتملة؛ راجع تشغيل هذه القطارات في الأعياد.</p>':'';
  const section=(title,items,offset,key)=>`<h3>${title} <span class="chip">${items.length}</span></h3>`+(items.length?`<div class="journey-list">${items.slice(0,state.journeyLimit[key]).map((x,i)=>journeyCard(x,offset+i)).join('')}</div>${items.length>state.journeyLimit[key]?`<button class="button outline journey-more" type="button" data-more-journeys="${key}">عرض المزيد (${items.length-state.journeyLimit[key]})</button>`:''}`:'<div class="empty">لا توجد رحلة مدخلة مطابقة لهذا التاريخ والاتجاه.</div>');
- $('journey-results').innerHTML=notice+section('الرحلات المباشرة',direct,0,'direct')+section('رحلات بتبديل واحد',connections,direct.length,'connections');
+ const partial = departuresOnly.length ? '<h3>مغادرات موثقة دون وقت وصول</h3><div class="journey-list">'+departuresOnly.map(leg=>{
+   const route=routeFor(leg.trip.route_id),img=route?.schedule_image;
+   const viewer=img?scheduleViewerHref(img,state.schedules):'';
+   return '<article class="journey-card"><div class="journey-card-head"><strong>'+esc(name(leg.from))+' ← '+esc(name(leg.to))+'</strong><span>'+journeyTime(leg.departure)+'</span></div><p class="minor">وقت المغادرة موثق؛ وقت الوصول والمدة غير منشورين.</p><div class="journey-links"><a class="photo-source" href="'+esc(tripPageLink(leg.trip,leg.serviceDate,leg.from,leg.to))+'">تفاصيل الرحلة ←</a>'+(viewer?'<a class="photo-source" href="'+esc(viewer)+'">الإعلان الرسمي ↗</a>':'')+'</div></article>';
+  }).join('')+'</div>' : '';
+ $('journey-results').innerHTML=notice+partial+section('الرحلات المباشرة',direct,0,'direct')+section('رحلات بتبديل واحد',connections,direct.length,'connections');
 }
 function itineraryReminder(item){
  const first=item.first||item,last=item.second||item;
