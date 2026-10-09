@@ -31,13 +31,28 @@ function legsForDate(trips, date, config, earliest) {
       }
     }
   }
-  return {legs, start, end};
+  const departuresOnly = [];
+  for (const trip of trips) {
+    if (!published(trip) || !runsOn(trip, date, config.calendars, config.exceptions, config.holidays)) continue;
+    const stops = trip.stop_times || [];
+    for (let i = 0; i < stops.length - 1; i++) {
+      if (!Number.isFinite(mins(stops[i].departure))) continue;
+      const departure = timestamp(date, stops[i].departure);
+      if (departure < earliest || departure >= end) continue;
+      for (let j = i + 1; j < stops.length; j++) {
+        if (Number.isFinite(mins(stops[j].arrival))) continue;
+        departuresOnly.push({trip, serviceDate:date, from:stops[i].station_id,
+          to:stops[j].station_id, fromIndex:i, toIndex:j, departure, arrival:null});
+      }
+    }
+  }
+  return {legs, start, end, departuresOnly};
 }
 
 export function planJourney({trips, origin, destination, date, after='00:00', calendars, exceptions=[], holidays=[], minTransfer=MIN_TRANSFER_MINUTES, maxTransfer=MAX_TRANSFER_MINUTES}) {
   if (!origin || !destination || origin === destination || !/^\d{4}-\d{2}-\d{2}$/.test(date) || !Number.isFinite(mins(after))) return {direct:[], connections:[]};
   const config = {calendars, exceptions, holidays};
-  const {legs, start, end} = legsForDate(trips, date, config, timestamp(date, after));
+  const {legs, start, end, departuresOnly} = legsForDate(trips, date, config, timestamp(date, after));
   const first = legs.filter(l => l.from === origin && l.departure >= start && l.departure < end);
   const direct = first.filter(l => l.to === destination)
     .sort((a,b) => a.departure-b.departure || a.arrival-b.arrival).slice(0,20);
@@ -58,6 +73,6 @@ export function planJourney({trips, origin, destination, date, after='00:00', ca
   }
   // Each unique pair of dated services and interchange should appear once.
   const seen = new Set();
-  return {direct, connections:connections.sort((a,b) => a.second.arrival-b.second.arrival || a.first.departure-b.first.departure)
+  return {direct, departuresOnly:departuresOnly.filter(l => l.from === origin && l.to === destination).sort((a,b)=>a.departure-b.departure).slice(0,20), connections:connections.sort((a,b) => a.second.arrival-b.second.arrival || a.first.departure-b.first.departure)
     .filter(c => {const key=[c.first.trip.trip_id,c.first.serviceDate,c.station,c.second.trip.trip_id,c.second.serviceDate].join('|');if(seen.has(key))return false;seen.add(key);return true}).slice(0,20)};
 }
