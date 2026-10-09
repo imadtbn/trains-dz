@@ -1,4 +1,4 @@
-import {stationPicker} from '../station-search.js?v=20261001-search8';
+import {stationPicker,searchStationCatalog} from '../station-search.js?v=20261009-all-stations';
 import {saveButton} from '../favorites-store.js?v=20261001-favorites';
 import {dayParts,dayISO,recordsAtStation,eligible,formatTime,countdown,classify,mins} from "./engine.js";
 import {planJourney} from "./planner.js?v=20261009-partial-search";
@@ -211,8 +211,7 @@ function journeyCard(item,index){
  return `<article class="journey-card"><div class="journey-card-head"><strong>${esc(title)}</strong><span>${journeyTime(first.departure)} ← ${journeyTime(last.arrival)}</span></div><p class="minor">${esc(name(first.from))} ← ${esc(name(last.to))} · المدة ${esc(journeyDuration((last.arrival-first.departure)/60000))}</p><div class="journey-links">${links}</div><details class="journey-extra"><summary>التوقفات والتذكيرات</summary>${journeyLeg(first)}${transfer?journeyLeg(last):''}<div class="journey-actions"><button class="button outline" type="button" data-calendar="${index}">إضافة تذكير إلى التقويم</button><button class="button outline" type="button" data-remind="${index}">تنبيه أثناء فتح الصفحة</button></div></details></article>`;
 }
 function populateJourneyStations(){
- const ids=new Set(state.trips.filter(t=>t.data_status==='source_transcribed'||t.data_status==='verified').flatMap(t=>t.stop_times.map(s=>s.station_id)));
- state.journeyStations=state.stations.filter(s=>ids.has(s.id)).sort((a,b)=>a.name.localeCompare(b.name,'ar'));
+ state.journeyStations=searchStationCatalog(state.stations);
 
  $('journey-date').value=dayISO(new Date());
  const p=dayParts(new Date());$('journey-after').value=p.hour+':'+p.minute;
@@ -237,7 +236,8 @@ function renderJourneyResults(){
    const viewer=img?scheduleViewerHref(img,state.schedules):'';
    return '<article class="journey-card"><div class="journey-card-head"><strong>'+esc(name(leg.from))+' ← '+esc(name(leg.to))+'</strong><span>'+journeyTime(leg.departure)+'</span></div><p class="minor">وقت المغادرة موثق؛ وقت الوصول والمدة غير منشورين.</p><div class="journey-links"><a class="photo-source" href="'+esc(tripPageLink(leg.trip,leg.serviceDate,leg.from,leg.to))+'">تفاصيل الرحلة ←</a>'+(viewer?'<a class="photo-source" href="'+esc(viewer)+'">الإعلان الرسمي ↗</a>':'')+'</div></article>';
   }).join('')+'</div>' : '';
- $('journey-results').innerHTML=notice+partial+section('الرحلات المباشرة',direct,0,'direct')+section('رحلات بتبديل واحد',connections,direct.length,'connections');
+ const emptyNotice=!direct.length&&!connections.length&&!departuresOnly.length?'<p class="journey-notice">لم نعثر على رحلة منشورة مطابقة للبحث. قد تكون بيانات الرحلات أو أوقات هذه المحطات غير مكتملة؛ عدم ظهور نتيجة لا يعني عدم وجود قطارات. <a href="sntf.html">راجع الجداول المصورة ←</a></p>':'';
+ $('journey-results').innerHTML=notice+emptyNotice+partial+section('الرحلات المباشرة',direct,0,'direct')+section('رحلات بتبديل واحد',connections,direct.length,'connections');
 }
 function itineraryReminder(item){
  const first=item.first||item,last=item.second||item;

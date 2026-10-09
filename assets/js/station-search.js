@@ -1,3 +1,5 @@
+// Station selection is independent of timetable coverage; keep one option per ID.
+export const searchStationCatalog=stations=>[...new Map(stations.map(s=>[s.id,s])).values()].sort((a,b)=>a.name.localeCompare(b.name,'ar'));
 export const normalizeStation=value=>String(value??'').normalize('NFKD').replace(/[\u0300-\u036f\u064b-\u065f\u0670]/g,'').replace(/[أإآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').toLocaleLowerCase().replace(/[^\p{L}\p{N}]/gu,'');
 export function findStations(stations,query,limit=8){const q=normalizeStation(query);if(!q)return [];return stations.map(s=>{const names=[s.name,s.name_fr,...(s.aliases||[]),...(s.sntf_names||[])].map(normalizeStation);return {s,score:!q?3:names.includes(q)?0:names.some(n=>n.startsWith(q))?1:names.some(n=>n.includes(q))?2:9}}).filter(x=>x.score<9).sort((a,b)=>a.score-b.score||a.s.name.localeCompare(b.s.name,'ar')).slice(0,limit).map(x=>x.s)}
 export function stationPicker(container,stations,{onChoose=()=>{}}={}){

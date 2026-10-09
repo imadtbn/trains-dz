@@ -1,5 +1,5 @@
 import {dayISO} from './sntf-trains/engine.js';
-import {stationPicker} from './station-search.js?v=20261001-search8';
+import {stationPicker,searchStationCatalog} from './station-search.js?v=20261009-all-stations';
 import {readFavorites} from './favorites-store.js?v=20261001-favorites';
 const form=document.querySelector('#home-search'),status=document.querySelector('#home-status');let from,to;
 form.elements.date.value=dayISO();
@@ -7,7 +7,7 @@ form.addEventListener('submit',e=>{if(!from||!to||!from.validate()||!to.validate
 document.querySelector('#home-swap').addEventListener('click',()=>{if(!from||!to)return;const a=from.get(),b=to.get();from.set(b);to.set(a);status.textContent='تم تبديل محطتي الانطلاق والوصول.'});
 try{
  const docs=await Promise.all(['stations','lines','trips'].map(async name=>{const r=await fetch(new URL('../data/sntf/'+name+'.json',import.meta.url),{cache:'no-cache'});if(!r.ok)throw Error('load');return r.json()}));
- const [stations,lines,trips]=docs,active=trips.trips.filter(t=>['verified','source_transcribed'].includes(t.data_status));const ids=new Set(active.flatMap(t=>t.stop_times.filter(s=>s.arrival!=null||s.departure!=null).map(s=>s.station_id))),sorted=stations.stations.filter(s=>ids.has(s.id));
+ const [stations,lines,trips]=docs,active=trips.trips.filter(t=>['verified','source_transcribed'].includes(t.data_status));const sorted=searchStationCatalog(stations.stations);
  from=stationPicker(document.querySelector('#home-origin'),sorted);to=stationPicker(document.querySelector('#home-destination'),sorted);
  form.querySelectorAll('[role=combobox]').forEach(input=>{input.disabled=false;input.placeholder='اكتب اسم المحطة…'});form.querySelector('button[type=submit]').disabled=false;
  document.querySelector('#stat-stations').textContent=stations.stations.length;document.querySelector('#stat-lines').textContent=lines.lines.length;document.querySelector('#stat-trips').textContent=active.length;
