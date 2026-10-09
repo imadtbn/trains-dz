@@ -238,6 +238,16 @@
         "chlef-affroun",
         "affroun-chlef"
       ]
+    },
+    {
+      "id": "telagh-oran-saida-frenda",
+      "name": "تلاغ – وهران / سعيدة – فرندة",
+      "category": "western",
+      "route_ids": [
+        "telagh-oran",
+        "oran-telagh",
+        "telagh-saida-frenda"
+      ]
     }
   ]
 }
