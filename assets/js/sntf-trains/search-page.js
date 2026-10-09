@@ -1,2 +1,2 @@
-import {startRailPage} from './rail-runtime.js?v=20261004-viewer-links';
+import {startRailPage} from './rail-runtime.js?v=20261009-partial-search';
 startRailPage('search');
