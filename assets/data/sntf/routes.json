@@ -555,6 +555,24 @@
       "stops_status": "intermediate_stops_pending_official_transcription",
       "editor_note": "المحطتان الطرفيتان مثبتتان في مرجع الصورة؛ قائمة المحطات الوسيطة غير مدخلة بعد، فلا تُعرض كمحطات توقف فعلية."
     },
+
+    {
+      "id": "oran-chlef",
+      "from": "oran",
+      "to": "chlef",
+      "category": "western",
+      "name": "وهران - الشلف",
+      "source": "dz-portal-gallery",
+      "schedule_image": "../assets/train-schedules/Western/oran-chlef.png",
+      "schedule_status": "requires-current-verification",
+      "line_id": "oran-chlef",
+      "catalog_status": "superseded",
+      "superseded_by": ["oran-chlef", "chlef-oran"],
+      "stops_status": "intermediate_stops_pending_official_transcription",
+      "editor_note": "المحطتان الطرفيتان مثبتتان في مرجع الصورة؛ قائمة المحطات الوسيطة غير مدخلة بعد، فلا تُعرض كمحطات توقف فعلية."
+    },
+
+
     {
       "id": "agha-chlef",
       "from": "agha",

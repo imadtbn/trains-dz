@@ -19022,9 +19022,54 @@
           "arrival": "11:40",
           "departure": null
         }
-      ],
-      "editor_note": "من صورة SNTF المؤرخة 19 سبتمبر 2026؛ وقت واحد منشور لكل محطة. لا تُمد الرحلة خارج محطتها الفعلية."
+      ]
+    }, 
+
+    {
+      "trip_id": "draft-oran-chlef",
+      "route_id": "oran-chlef",
+      "service_id": "daily",
+      "train_number": null,
+      "source_id": "dz-rail-manual-draft",
+      "data_status": "pending_review",
+      "stop_times": [
+        {
+          "station_id": "oran",
+          "sequence": 1,
+          "arrival": null,
+          "departure": "16:00"
+        },
+        {
+          "station_id": "chlef",
+          "sequence": 3,
+          "arrival": "05:30",
+          "departure": null
+        }
+      ]
     },
+    {
+      "trip_id": "draft-oran-chlef",
+      "route_id": "chlef-oran",
+      "service_id": "daily",
+      "train_number": null,
+      "source_id": "dz-rail-manual-draft",
+      "data_status": "pending_review",
+      "stop_times": [
+        {
+          "station_id": "chlef",
+          "sequence": 1,
+          "arrival": null,
+          "departure": "05:45"
+        },
+        {
+          "station_id": "oran",
+          "sequence": 2,
+          "arrival": "07:30",
+          "departure": null
+        }
+      ]
+    },
+
     {
       "trip_id": "photo-thenia-affroun-B156-157-daily-20260919",
       "route_id": "affroun-thenia",
