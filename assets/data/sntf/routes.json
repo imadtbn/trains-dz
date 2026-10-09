@@ -1880,6 +1880,58 @@
       "line_id": "oran-chlef",
       "stops_status": "intermediate_stops_pending_official_transcription",
       "editor_note": "استئناف 21 سبتمبر 2026؛ مغادرة الشلف 05:45. لم تُذكر مواعيد الوصول أو التوقفات."
+    },
+    {
+      "id": "telagh-oran",
+      "from": "telagh",
+      "to": "oran",
+      "category": "western",
+      "name": "تلاغ ← وهران",
+      "source": "sntf-telagh-oran-saida-frenda-announcement",
+      "schedule_image": "../assets/train-schedules/Western/telagh-oran-saida-frenda.jpg",
+      "schedule_status": "official_departures_confirmed",
+      "line_id": "telagh-oran-saida-frenda",
+      "stops_status": "intermediate_stops_pending_official_transcription",
+      "stops": [
+        "telagh",
+        "oran"
+      ],
+      "editor_note": "أوقات المغادرة من إعلان SNTF المرفق. لم يذكر الإعلان أوقات الوصول أو توقيت التوقف في سعيدة، ولم يحدد أيام التشغيل."
+    },
+    {
+      "id": "oran-telagh",
+      "from": "oran",
+      "to": "telagh",
+      "category": "western",
+      "name": "وهران ← تلاغ",
+      "source": "sntf-telagh-oran-saida-frenda-announcement",
+      "schedule_image": "../assets/train-schedules/Western/telagh-oran-saida-frenda.jpg",
+      "schedule_status": "official_departures_confirmed",
+      "line_id": "telagh-oran-saida-frenda",
+      "stops_status": "intermediate_stops_pending_official_transcription",
+      "stops": [
+        "oran",
+        "telagh"
+      ],
+      "editor_note": "أوقات المغادرة من إعلان SNTF المرفق. لم يذكر الإعلان أوقات الوصول أو توقيت التوقف في سعيدة، ولم يحدد أيام التشغيل."
+    },
+    {
+      "id": "telagh-saida-frenda",
+      "from": "telagh",
+      "to": "frenda",
+      "category": "western",
+      "name": "تلاغ ← سعيدة ← فرندة",
+      "source": "sntf-telagh-oran-saida-frenda-announcement",
+      "schedule_image": "../assets/train-schedules/Western/telagh-oran-saida-frenda.jpg",
+      "schedule_status": "official_departures_confirmed",
+      "line_id": "telagh-oran-saida-frenda",
+      "stops_status": "intermediate_stops_pending_official_transcription",
+      "stops": [
+        "telagh",
+        "saida",
+        "frenda"
+      ],
+      "editor_note": "أوقات المغادرة من إعلان SNTF المرفق. لم يذكر الإعلان أوقات الوصول أو توقيت التوقف في سعيدة، ولم يحدد أيام التشغيل."
     }
   ]
 }
