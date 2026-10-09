@@ -1,6 +1,6 @@
 {
-  "version": 13,
-  "updated": "2026-09-28",
+  "version": 14,
+  "updated": "2026-10-09",
   "trips": [
     {
       "trip_id": "user-zeralda-agha-1500",
@@ -19023,15 +19023,14 @@
           "departure": null
         }
       ]
-    }, 
-
+    },
     {
-      "trip_id": "draft-oran-chlef",
+      "trip_id": "sntf-oran-chlef-1600-20260921",
       "route_id": "oran-chlef",
       "service_id": "daily",
       "train_number": null,
-      "source_id": "dz-rail-manual-draft",
-      "data_status": "pending_review",
+      "source_id": "sntf-oran-chlef-resumption-20260921",
+      "data_status": "source_transcribed",
       "stop_times": [
         {
           "station_id": "oran",
@@ -19041,19 +19040,22 @@
         },
         {
           "station_id": "chlef",
-          "sequence": 3,
-          "arrival": "05:30",
+          "sequence": 2,
+          "arrival": null,
           "departure": null
         }
-      ]
+      ],
+      "effective_from": "2026-09-21",
+      "operating_days_note": "أيام التشغيل غير مذكورة في الإعلان الرسمي؛ الخدمة اليومية واردة من الإدخال اليدوي السابق وتحتاج التأكيد.",
+      "editor_note": "توقيت المغادرة فقط مؤكد في إعلان الاستئناف؛ الوصول والمحطات الوسيطة غير مذكورة."
     },
     {
-      "trip_id": "draft-oran-chlef",
+      "trip_id": "sntf-chlef-oran-0545-20260921",
       "route_id": "chlef-oran",
       "service_id": "daily",
       "train_number": null,
-      "source_id": "dz-rail-manual-draft",
-      "data_status": "pending_review",
+      "source_id": "sntf-oran-chlef-resumption-20260921",
+      "data_status": "source_transcribed",
       "stop_times": [
         {
           "station_id": "chlef",
@@ -19064,12 +19066,14 @@
         {
           "station_id": "oran",
           "sequence": 2,
-          "arrival": "07:30",
+          "arrival": null,
           "departure": null
         }
-      ]
+      ],
+      "effective_from": "2026-09-21",
+      "operating_days_note": "أيام التشغيل غير مذكورة في الإعلان الرسمي؛ الخدمة اليومية واردة من الإدخال اليدوي السابق وتحتاج التأكيد.",
+      "editor_note": "توقيت المغادرة فقط مؤكد في إعلان الاستئناف؛ الوصول والمحطات الوسيطة غير مذكورة."
     },
-
     {
       "trip_id": "photo-thenia-affroun-B156-157-daily-20260919",
       "route_id": "affroun-thenia",
