@@ -143,11 +143,10 @@
       ]
     },
     {
-      "id": "oran-chlef",
+      "id": "oran-chlef-regional-corridor",
       "name": "وهران – الشلف – آغا",
       "category": "western",
       "route_ids": [
-        "oran-chlef",
         "agha-chlef",
         "khemis-chlef",
         "chlef-agha",
