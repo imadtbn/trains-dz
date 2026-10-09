@@ -1,7 +1,7 @@
 import {stationPicker} from '../station-search.js?v=20261001-search8';
 import {saveButton} from '../favorites-store.js?v=20261001-favorites';
 import {dayParts,dayISO,recordsAtStation,eligible,formatTime,countdown,classify,mins} from "./engine.js";
-import {planJourney} from "./planner.js";
+import {planJourney} from "./planner.js?v=20261009-partial-search";
 import {railwayCategories,categoryRoutes,canonicalRouteId,routeTrips,routeStopSummary,lineRoutes,lineSummary,stationLineServices,eligibleStationIdsByCategory} from "./network.js?v=20260928-catalog-audit";
 import {scheduleViewerHref} from "./schedule-links.js?v=20261004-viewer-links";
 export function startRailPage(pageMode){
