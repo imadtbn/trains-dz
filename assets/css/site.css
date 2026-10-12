@@ -2248,3 +2248,14 @@ h3 {
     font-size:11px;
   }
 }
+
+/* Homepage hero: compact paired CTAs and restrained golden share glow. */
+.home-hero .hero-actions{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:10px;align-items:stretch;max-width:480px;margin-top:13px}
+.home-hero .hero-actions .hero-action,.home-hero .hero-actions .hero-share-button{box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-width:0;width:100%;min-height:46px;margin:0;padding:10px 12px;font-size:clamp(11px,1.4vw,14px);font-weight:700;line-height:1.45;white-space:nowrap;text-align:center}
+.home-hero .hero-actions .hero-action{gap:8px}
+.home-hero .hero-actions .hero-share-button{border:1.5px solid #e8ba49;border-radius:10px;background:linear-gradient(140deg,#294d40,#173b35);color:#fff1c5;box-shadow:0 0 0 1px #f0c55d25,inset 0 0 10px #f0c55d12,0 0 12px #e8ba4940;transition:box-shadow .25s ease,background .25s ease,transform .25s ease}
+.home-hero .hero-actions .hero-share-button svg{flex:none;color:#ffd775}
+.home-hero .hero-actions .hero-share-button:hover,.home-hero .hero-actions .hero-share-button:focus-visible{background:#315344;box-shadow:0 0 0 2px #f2ce7660,0 0 22px #efbc5680;transform:translateY(-1px)}
+.home-hero .hero-actions .hero-share-button:focus-visible{outline:2px solid #fff0ba;outline-offset:3px}
+@media(max-width:400px){.home-hero .hero-actions{gap:7px}.home-hero .hero-actions .hero-action,.home-hero .hero-actions .hero-share-button{font-size:11px;padding:9px 5px;gap:5px}.home-hero .hero-actions .hero-share-button svg{width:16px;height:16px}}
+@media(prefers-reduced-motion:reduce){.home-hero .hero-actions .hero-share-button{transition:none}.home-hero .hero-actions .hero-share-button:hover{transform:none}}
