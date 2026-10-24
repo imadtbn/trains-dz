@@ -1,3 +1,4 @@
+import {readSntfData} from './sntf-trains/data-source.js?v=20261024-shared-db';
 const root=new URL('../../',import.meta.url);
 const categoryLabels={suburban:'ضاحية الجزائر',eastern:'الجهة الشرقية',western:'الجهة الغربية',sahara:'الصحراء والهضاب',international:'الخط الدولي'};
 const params=new URL(location.href).searchParams;
@@ -45,7 +46,6 @@ els.fullDialog.addEventListener('click',e=>{if(e.target===els.fullDialog)els.ful
 els.image.addEventListener('load',()=>{els.loading.hidden=true;els.image.hidden=false;setZoom(1,false)});
 els.image.addEventListener('error',()=>showError('تعذر تحميل صورة الجدول. تحقق من الاتصال ثم أعد المحاولة.'));
 try{
- const response=await fetch(new URL('assets/data/sntf/gallery-index.json',root),{cache:'no-cache'});if(!response.ok)throw Error('load');
- const data=await response.json();const item=data.images.find(entry=>entry.id===requested);
+ const data=await readSntfData('gallery-index','images');const item=data.images.find(entry=>entry.id===requested);
  if(!item){showError('هذا الجدول غير موجود في قاعدة الجداول.');}else setMeta(item);
 }catch{showError('تعذر تحميل بيانات الجداول. تحقق من الاتصال ثم أعد المحاولة.')}
