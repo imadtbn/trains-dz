@@ -8,6 +8,14 @@ const real=planJourney({trips,origin:'thenia',destination:'el_affroun',date:'202
 assert(real.direct.some(x=>x.trip.train_number==='B124/125'&&x.fromIndex===0&&x.toIndex===21));
 assert(!real.direct.some(x=>x.trip.train_number==='B126/127'),'Rغاية departure must not masquerade as a Thénia train');
 assert(real.direct.every(x=>x.departure<x.arrival));
+
+// Regression: official daily Annaba timetable must remain searchable in both directions.
+const annabaOut=planJourney({trips,origin:'agha',destination:'annaba',date:'2026-10-26',after:'00:00',calendars,exceptions,holidays:holidays.dates});
+assert(annabaOut.departuresOnly?.some(x=>x.trip.trip_id==='photo-east-agha-annaba'),
+  'Agha → Annaba must appear when the official poster publishes departure but no final arrival time');
+const annabaBack=planJourney({trips,origin:'annaba',destination:'agha',date:'2026-10-26',after:'00:00',calendars,exceptions,holidays:holidays.dates});
+assert(annabaBack.direct.some(x=>x.trip.trip_id==='photo-east-annaba-agha'),
+  'Annaba → Agha must appear from the canonical daily timetable');
 const mk=(id,route,stops,service_id='daily')=>({trip_id:id,route_id:route,data_status:'source_transcribed',service_id,stop_times:stops.map(([station_id,departure,arrival])=>({station_id,departure,arrival}))});
 const sample=[
  mk('one','a-b',[['a','08:00',null],['b','08:40','08:40']]),
