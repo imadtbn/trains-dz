@@ -11,8 +11,8 @@ assert(real.direct.every(x=>x.departure<x.arrival));
 
 // Regression: official daily Annaba timetable must remain searchable in both directions.
 const annabaOut=planJourney({trips,origin:'agha',destination:'annaba',date:'2026-10-26',after:'00:00',calendars,exceptions,holidays:holidays.dates});
-assert(annabaOut.departuresOnly?.some(x=>x.trip.trip_id==='photo-east-agha-annaba'),
-  'Agha → Annaba must appear when the official poster publishes departure but no final arrival time');
+assert(annabaOut.direct.some(x=>x.trip.trip_id==='photo-east-agha-annaba'),
+  'Agha → Annaba must appear from the official daily timetable');
 const annabaBack=planJourney({trips,origin:'annaba',destination:'agha',date:'2026-10-26',after:'00:00',calendars,exceptions,holidays:holidays.dates});
 assert(annabaBack.direct.some(x=>x.trip.trip_id==='photo-east-annaba-agha'),
   'Annaba → Agha must appear from the canonical daily timetable');
