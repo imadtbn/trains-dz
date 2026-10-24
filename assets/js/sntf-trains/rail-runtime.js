@@ -4,8 +4,8 @@ import {dayParts,dayISO,recordsAtStation,eligible,formatTime,countdown,classify,
 import {planJourney} from "./planner.js?v=20261009-partial-search";
 import {railwayCategories,categoryRoutes,canonicalRouteId,routeTrips,routeStopSummary,lineRoutes,lineSummary,stationLineServices,eligibleStationIdsByCategory} from "./network.js?v=20260928-catalog-audit";
 import {scheduleViewerHref} from "./schedule-links.js?v=20261004-viewer-links";
+import {readSntfData} from "./data-source.js?v=20261024-shared-db";
 export function startRailPage(pageMode){
-const dataRoot=new URL("../../data/sntf/",import.meta.url);
 const $=id=>document.getElementById(id);
 const esc=x=>String(x??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const state={stations:[],routes:[],lines:[],category:"",allowedStopIds:null,trips:[],calendars:[],exceptions:[],holidays:[],holidaysComplete:false,sources:[],schedules:[],selected:null,route:"",user:null,map:null,mapPending:null,markers:[],userMarker:null,activePopup:null,activeTask:pageMode,boardMode:"departures",boardLimit:{departure:20,arrival:20},lastMinute:"",busy:false,journeys:[],journeyStations:[],boardStations:[],journeyResults:null,journeyLimit:{direct:4,connections:3}};
@@ -50,7 +50,7 @@ const serviceName=id=>state.calendars.find(c=>c.id===id)?.label||serviceLabel[id
 const hasGeo=s=>Number.isFinite(s.lat)&&Number.isFinite(s.lon)&&Math.abs(s.lat)<=90&&Math.abs(s.lon)<=180;
 const verifiedGeo=s=>s.geo_verified===true&&hasGeo(s);
 const editableTrips=()=>eligible(state.trips).filter(t=>state.route?t.route_id===canonical(state.route):!state.category||routeFor(t.route_id)?.category===state.category);
-async function get(name,key){const response=await fetch(new URL(name+".json",dataRoot),{cache:"no-cache"});if(!response.ok)throw Error(name+": HTTP "+response.status);const data=await response.json();if(!Array.isArray(data[key]))throw Error(name+": بيانات غير صالحة");return data}
+async function get(name,key){return readSntfData(name,key)}
 function allowedOnRoute(s){return state.allowedStopIds===null||state.allowedStopIds.has(s.id)}
 function updateAllowedStations(){
  state.allowedStopIds=eligibleStationIdsByCategory(state.category,state.route,state.lines,state.routes,state.trips);
