@@ -1,7 +1,7 @@
 import {saveButton} from '../favorites-store.js?v=20261001-favorites';
 import {dayISO,mins,formatTime,runsOn,shiftISO,isHoliday} from './engine.js';
 import {scheduleViewerHref} from './schedule-links.js?v=20261004-viewer-links';
-const root=new URL('../../data/sntf/',import.meta.url);
+import {readSntfData} from './data-source.js?v=20261024-shared-db';
 const $=id=>document.getElementById(id);
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const validDate=value=>/^\d{4}-\d{2}-\d{2}$/.test(value)&&!Number.isNaN(Date.parse(value+'T12:00:00Z'))&&new Date(value+'T12:00:00Z').toISOString().slice(0,10)===value;
@@ -17,7 +17,7 @@ const safeImage=value=>{
  if(/^https:\/\/imadtbn\.github\.io\/dz_portal\/assets\/train-schedules\/[\w./ -]+\.(?:png|jpe?g|webp|svg)$/i.test(value)&&!value.includes('/../'))return '../assets/train-schedules/'+value.split('/assets/train-schedules/')[1];
  return null;
 };
-async function read(name,key){const response=await fetch(new URL(name+'.json',root),{cache:'no-cache'});if(!response.ok)throw Error('تعذر تحميل '+name);const data=await response.json();if(!Array.isArray(data[key]))throw Error('ملف غير صالح: '+name);return data}
+async function read(name,key){return readSntfData(name,key)}
 const params=new URL(location.href).searchParams;
 let trip,route,source,calendar,stations,calendars,exceptions,holidays,complete,date,from,to,image,scheduleImages=[];
 const station=id=>stations.find(s=>s.id===id)?.name||id;
