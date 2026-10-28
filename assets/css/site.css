@@ -2488,3 +2488,70 @@ h3 {
   .site-foot .share-open { transition: none; }
   .site-foot .footer-grid > div:last-child > a:hover { transform: none; }
 }
+
+
+/* Advertisement stability and horizontal-overflow safeguards (2026-10-28). */
+html {
+  max-width: 100%;
+  overflow-x: clip;
+}
+body {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+img, video, iframe, canvas, svg {
+  max-width: 100%;
+}
+.shell,
+main,
+main > *,
+section,
+article,
+.ad-container,
+.ad-slot {
+  min-width: 0;
+  max-width: 100%;
+}
+.ad-container {
+  width: 100%;
+  min-width: 0;
+  contain: layout style;
+}
+.ad-slot {
+  width: 100%;
+  min-width: 0;
+  overflow: clip;
+}
+.ad-container ins.adsbygoogle,
+.ad-container .adsbygoogle {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin-inline: auto;
+  box-sizing: border-box;
+}
+.ad-container iframe {
+  max-width: 100% !important;
+}
+@media (max-width: 760px) {
+  .ad-container {
+    width: 100%;
+    margin-block: 20px;
+    padding: 26px 8px 8px;
+    border-radius: 10px;
+  }
+  .ad-slot {
+    min-height: 250px;
+  }
+  .ad-feed .ad-slot {
+    min-height: 280px;
+  }
+}
+@media (max-width: 360px) {
+  .ad-container {
+    padding-inline: 5px;
+  }
+}
