@@ -2627,6 +2627,6 @@ canvas {
   }
   .ad-slot,
   .ad-feed .ad-slot {
-    min-height: 250px;
+    min-height: 320px;
   }
 }
