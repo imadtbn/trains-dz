@@ -2555,3 +2555,78 @@ article,
     padding-inline: 5px;
   }
 }
+
+
+/* Mobile viewport containment: shared pages and nested grid/flex content. */
+html {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+body {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: clip;
+}
+.site-head,
+.site-head > *,
+.site-head .shell,
+.head-row,
+main,
+main > *,
+main .shell,
+.home-hero,
+.home-hero > *,
+.home-hero .shell,
+.site-foot,
+.site-foot > *,
+.site-foot .shell {
+  min-width: 0;
+  max-width: 100%;
+}
+.shell {
+  min-width: 0;
+}
+img,
+video,
+iframe,
+canvas {
+  max-width: 100%;
+}
+@media (max-width: 760px) {
+  .shell,
+  .home-hero .shell {
+    width: calc(100% - 24px);
+    max-width: calc(100% - 24px);
+  }
+  .head-row,
+  .hero-layout,
+  .contact-layout,
+  .quick-search,
+  .quick-search form,
+  .journey-section,
+  .board-panel,
+  .map-panel,
+  .routes-section,
+  .contact-guide,
+  .contact-form-panel {
+    min-width: 0;
+    max-width: 100%;
+  }
+  .contact-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .contact-guide,
+  .contact-form-panel {
+    padding: 16px;
+  }
+  .ad-container {
+    max-width: 100%;
+    overflow: clip;
+  }
+  .ad-slot,
+  .ad-feed .ad-slot {
+    min-height: 250px;
+  }
+}
